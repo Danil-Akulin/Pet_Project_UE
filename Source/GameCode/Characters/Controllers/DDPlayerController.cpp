@@ -72,6 +72,7 @@ void ADDPlayerController::ChangeCrouchState()
 	}
 }
 
+
 void ADDPlayerController::StartSprint()
 {
 	if (CachedBaseCharacter.IsValid())
@@ -87,4 +88,3 @@ void ADDPlayerController::StopSprint()
 		CachedBaseCharacter->StopSprint();
 	}
 }
-	

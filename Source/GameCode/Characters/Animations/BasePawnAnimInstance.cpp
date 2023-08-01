@@ -21,6 +21,5 @@ void UBasePawnAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 
 	InputForward = CachedBasePawn->GetInputForward();
 	InputRight = CachedBasePawn->GetInputRight();
-
 	bIsInAir = CachedBasePawn->GetMovementComponent()->IsFalling();
 }

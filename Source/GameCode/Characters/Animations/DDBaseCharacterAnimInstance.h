@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Animation/AnimInstance.h"
+#include "../PlayerCharacter.h"
 #include "DDBaseCharacterAnimInstance.generated.h"
 
 /**
@@ -19,6 +20,7 @@ public:
 	virtual void NativeBeginPlay() override;
 	virtual void NativeUpdateAnimation(float DeltaSeconds) override;
 
+
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character Animation")
 	float Speed = 0;
@@ -31,6 +33,7 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character Animation")
 	bool bIsSprinting = false;
+
 
 private:
 	TWeakObjectPtr<class ADDBaseCharacter> CachedBaseCharacter;

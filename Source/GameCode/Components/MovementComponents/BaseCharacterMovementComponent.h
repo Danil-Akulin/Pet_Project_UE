@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "../../Characters/Animations/DDBaseCharacterAnimInstance.h"
 #include "BaseCharacterMovementComponent.generated.h"
 
 /**
@@ -23,10 +24,22 @@ public:
 	void StartSprint();
 	void StopSprint();
 
+	void UpdateStamina();
+	void DelayedFunction();
+
 protected:
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character movement: Sprint", meta = (ClampMin = 0.0f, UIMin = 0.0f))
 	float SprintSpeed = 1200.0f;
 
 private:
 	bool bIsSprinting;
+
+	float Stamina = 100.0f;
+	const float StaminaUpdateInterval = 0.1f;
+	FTimerHandle StaminaUpdateTimerHandle;
+	FTimerHandle TimerHandle_Delay;
+
+	float DelaySeconds = 3.0f;
+
 };

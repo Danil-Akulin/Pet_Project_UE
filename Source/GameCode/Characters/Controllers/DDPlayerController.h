@@ -30,7 +30,7 @@ private:
 	void LookUp(float Value);
 	void Jump();
 	void ChangeCrouchState();
-
+	void ChangeProneState();
 
 	void StartSprint();
 	void StopSprint();

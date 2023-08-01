@@ -11,7 +11,6 @@ void UDDBaseCharacterAnimInstance::NativeBeginPlay()
 	Super::NativeBeginPlay();
 	checkf(TryGetPawnOwner()->IsA<ADDBaseCharacter>(), TEXT("ERROR - ALL BAD"));
 	CachedBaseCharacter = StaticCast<ADDBaseCharacter*>(TryGetPawnOwner());
-
 }
 
 void UDDBaseCharacterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
@@ -21,11 +20,11 @@ void UDDBaseCharacterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 	{
 		return;
 	}
-	//UCharacterMovementComponent* CharacterMovement = CachedBaseCharacter->GetCharacterMovement();
-	UBaseCharacterMovementComponent* CharacterMovement = CachedBaseCharacter->GetBaseCharacterMovementComponent();
 
+	UBaseCharacterMovementComponent* CharacterMovement = CachedBaseCharacter->GetBaseCharacterMovementComponent();
 	Speed = CharacterMovement->Velocity.Size();
 	bIsFalling = CharacterMovement->IsFalling();
 	bIsCrouching = CharacterMovement->IsCrouching();
 	bIsSprinting = CharacterMovement->IsSprinting();
 }
+ 

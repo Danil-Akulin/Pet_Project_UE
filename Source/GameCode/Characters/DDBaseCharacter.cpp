@@ -23,6 +23,8 @@ void ADDBaseCharacter::ChangeCrouchState()
 	}
 }
 
+
+
 void ADDBaseCharacter::StartSprint()
 {
 	bIsSprintRequested = true;
@@ -37,6 +39,8 @@ void ADDBaseCharacter::StopSprint()
 	bIsSprintRequested = false;
 }
 
+
+
 void ADDBaseCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
@@ -49,8 +53,7 @@ bool ADDBaseCharacter::CanSprint()
 }
 
 void ADDBaseCharacter::TryChangeSprintState()
-{
-	//if (bIsSprintRequested && !bIsSprinting && CanSprint())			// если есть запрос на спринт но мы не бежим но мы можем бежать
+{																			// если есть запрос на спринт но мы не бежим но мы можем бежать
 	if (bIsSprintRequested && !BaseCharacterMovementComponent->IsSprinting() && CanSprint())
 	{
 		BaseCharacterMovementComponent->StartSprint();
@@ -61,3 +64,4 @@ void ADDBaseCharacter::TryChangeSprintState()
 		BaseCharacterMovementComponent->StopSprint();
 	}
 }
+

@@ -6,6 +6,7 @@
 #include "GameFramework/Character.h"
 #include "DDBaseCharacter.generated.h"
 
+
 class UBaseCharacterMovementComponent;
 UCLASS(Abstract, NotBlueprintable)
 class GAMECODE_API ADDBaseCharacter : public ACharacter
@@ -27,13 +28,10 @@ public:
 	virtual void StartSprint();
 	virtual void StopSprint();
 
-
 	virtual void Tick(float DeltaTime) override;	
 
 	FORCEINLINE UBaseCharacterMovementComponent* GetBaseCharacterMovementComponent() { return BaseCharacterMovementComponent; }
 
-
-	//FORCEINLINE bool GetIsSprinting() { return bIsSprinting; }
 
 protected:
 
@@ -44,11 +42,10 @@ protected:
 
 	UBaseCharacterMovementComponent* BaseCharacterMovementComponent;
 
+
 private:
 
 	void TryChangeSprintState();
-
-	//float DefaultMaxSpeed = 0;
 	bool bIsSprintRequested = false;
-	// bool bIsSprinting = false;
+
 };
