@@ -30,6 +30,10 @@ public:
 
 	virtual void Tick(float DeltaTime) override;	
 
+	virtual void SwimForward(float Value) {};
+	virtual void SwimRight(float Value) {};
+	virtual void SwimUp(float Value) {};
+
 	FORCEINLINE UBaseCharacterMovementComponent* GetBaseCharacterMovementComponent() { return BaseCharacterMovementComponent; }
 
 
