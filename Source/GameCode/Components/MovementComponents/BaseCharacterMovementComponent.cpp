@@ -3,6 +3,8 @@
 
 #include "BaseCharacterMovementComponent.h"
 #include "../../Characters/Animations/DDBaseCharacterAnimInstance.h"
+#include "GameFramework/Character.h"
+#include "Components/CapsuleComponent.h"
 
 float UBaseCharacterMovementComponent::GetMaxSpeed() const
 {
@@ -62,3 +64,19 @@ void UBaseCharacterMovementComponent::DelayedFunction()
 	}
 	return;
 }
+
+void UBaseCharacterMovementComponent::OnMovementModeChanged(EMovementMode PreviousMovementMove, uint8 PreviousCustomMode)
+{
+	Super::OnMovementModeChanged(PreviousMovementMove, PreviousCustomMode);
+
+	if (MovementMode == MOVE_Swimming)
+	{
+		CharacterOwner->GetCapsuleComponent()->SetCapsuleSize(SwimmingCapsuleRadius, SwimmingCapsuleHalfHeight);
+	}
+	else if (PreviousMovementMove == MOVE_Swimming)
+	{
+		ACharacter* DefaultCharacter = CharacterOwner->GetClass()->GetDefaultObject<ACharacter>();
+		CharacterOwner->GetCapsuleComponent()->SetCapsuleSize(DefaultCharacter->GetCapsuleComponent()->GetUnscaledCapsuleRadius(), DefaultCharacter->GetCapsuleComponent()->GetUnscaledCapsuleHalfHeight(), true);
+	}
+}
+	

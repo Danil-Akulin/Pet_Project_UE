@@ -34,6 +34,8 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character Animation")
 	bool bIsSprinting = false;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character Animation")
+	bool bIsSwimming = false;
 
 private:
 	TWeakObjectPtr<class ADDBaseCharacter> CachedBaseCharacter;

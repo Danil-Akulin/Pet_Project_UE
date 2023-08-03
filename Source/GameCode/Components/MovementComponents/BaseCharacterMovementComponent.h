@@ -29,8 +29,16 @@ public:
 
 protected:
 
+	virtual void OnMovementModeChanged(EMovementMode PreviousMovementMove, uint8 PreviousCustomMode) override;
+
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character movement: Sprint", meta = (ClampMin = 0.0f, UIMin = 0.0f))
 	float SprintSpeed = 1200.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character movement: Swimming", meta=(ClampMin = "0", UIMin = "0"))
+	float SwimmingCapsuleRadius = 60.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character movement: Swimming", meta = (ClampMin = "0", UIMin = "0"))
+	float SwimmingCapsuleHalfHeight = 60.0f;
 
 private:
 	bool bIsSprinting;
