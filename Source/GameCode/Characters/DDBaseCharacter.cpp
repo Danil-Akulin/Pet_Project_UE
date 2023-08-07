@@ -4,11 +4,14 @@
 #include "DDBaseCharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "../Components/MovementComponents/BaseCharacterMovementComponent.h"
+#include "../LedgeDetectorComponents.h"
 
 ADDBaseCharacter::ADDBaseCharacter(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer.SetDefaultSubobjectClass<UBaseCharacterMovementComponent>(ACharacter::CharacterMovementComponentName))
 {
 	BaseCharacterMovementComponent = StaticCast<UBaseCharacterMovementComponent*>(GetCharacterMovement());
+
+	LedgeDetectorComponent = CreateDefaultSubobject<ULedgeDetectorComponents>(TEXT("LedgeDetector"));
 }
 
 void ADDBaseCharacter::ChangeCrouchState()
@@ -22,8 +25,6 @@ void ADDBaseCharacter::ChangeCrouchState()
 		Crouch();
 	}
 }
-
-
 
 void ADDBaseCharacter::StartSprint()
 {
@@ -39,12 +40,19 @@ void ADDBaseCharacter::StopSprint()
 	bIsSprintRequested = false;
 }
 
-
-
 void ADDBaseCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	TryChangeSprintState();
+}
+
+void ADDBaseCharacter::PullUp()
+{
+	FLedgeDescription LedgeDiscriptin;
+	if (LedgeDetectorComponent->DetectLedge(LedgeDiscriptin))
+	{
+		// to do
+	}
 }
 
 bool ADDBaseCharacter::CanSprint()

@@ -21,6 +21,7 @@ void ADDPlayerController::SetupInputComponent()
 	InputComponent->BindAxis("SwimForward", this, &ADDPlayerController::SwimForward);
 	InputComponent->BindAxis("SwimRight", this, &ADDPlayerController::SwimRight);
 	InputComponent->BindAxis("SwimUp", this, &ADDPlayerController::SwimUp);
+	InputComponent->BindAction("PullUp", EInputEvent::IE_Pressed, this, &ADDPlayerController::PullUp);
 	InputComponent->BindAction("Jump", EInputEvent::IE_Pressed, this, &ADDPlayerController::Jump);
 	InputComponent->BindAction("Crouch", EInputEvent::IE_Pressed, this, &ADDPlayerController::ChangeCrouchState);
 	InputComponent->BindAction("Sprint", EInputEvent::IE_Pressed, this, &ADDPlayerController::StartSprint);
@@ -59,6 +60,14 @@ void ADDPlayerController::LookUp(float Value)
 	}
 }
 
+void ADDPlayerController::PullUp()
+{
+	if (CachedBaseCharacter.IsValid())
+	{
+		CachedBaseCharacter->PullUp();
+	}
+}
+
 void ADDPlayerController::Jump()
 {
 	if (CachedBaseCharacter.IsValid())
@@ -74,7 +83,6 @@ void ADDPlayerController::ChangeCrouchState()
 		CachedBaseCharacter->ChangeCrouchState();
 	}
 }
-
 
 void ADDPlayerController::StartSprint()
 {

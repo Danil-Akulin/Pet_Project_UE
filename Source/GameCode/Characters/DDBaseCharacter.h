@@ -34,8 +34,12 @@ public:
 	virtual void SwimRight(float Value) {};
 	virtual void SwimUp(float Value) {};
 
+	virtual void PullUp();
+
 	FORCEINLINE UBaseCharacterMovementComponent* GetBaseCharacterMovementComponent() { return BaseCharacterMovementComponent; }
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Character | Movement")
+	class ULedgeDetectorComponents* LedgeDetectorComponent;
 
 protected:
 
