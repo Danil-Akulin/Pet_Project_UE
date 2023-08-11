@@ -20,7 +20,7 @@ public:
 private:
 
 	UFUNCTION(Exec)
-		void EnableDebugCategory(const FName& CategoryName, bool bIsEnabled);
+	void EnableDebugCategory(const FName& CategoryName, bool bIsEnabled);
 
 	TMap<FName, bool> EnabledDebugCategories;
 
