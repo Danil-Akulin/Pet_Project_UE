@@ -7,6 +7,10 @@
 #include "DD_Types.h"
 #include "DrawDebugHelpers.h"
 #include "Utils/GCTraceUtils.h"
+#include "Characters/DDBaseCharacter.h"
+#include "Kismet/GameplayStatics.h"
+#include "DDGameInstance.h"
+#include "Subsystems/DebugSubsystem.h"
 
 // Called when the game starts
 void ULedgeDetectorComponents::BeginPlay()
@@ -25,6 +29,16 @@ bool ULedgeDetectorComponents::DetectLedge(OUT FLedgeDescription& LedgeDescripti
 	QueryParams.bTraceComplex = true;
 	QueryParams.AddIgnoredActor(GetOwner());
 	//
+	
+#if ENABLE_DRAW_DEBUG
+	UDebugSubsystem* DebugSubSystem = UGameplayStatics::GetGameInstance(GetWorld())->GetSubsystem<UDebugSubsystem>();
+	bool bIsDebugEnabled = DebugSubSystem->IsCategoryEnabled(DebugCategoryLedgeDetection);
+#else
+	bool bIsDebugEnabled = false;
+#endif
+	float DrawTime = 2.0f; 
+
+
 	float BottomZOffset = 2.0f;
 	FVector CharacterBottom = CachedCharacterOwner->GetActorLocation() - (CapsuleComponent->GetScaledCapsuleHalfHeight() - BottomZOffset) * FVector::UpVector;
 	
@@ -37,9 +51,7 @@ bool ULedgeDetectorComponents::DetectLedge(OUT FLedgeDescription& LedgeDescripti
 	FVector ForwardStartLocation = CharacterBottom + (MinimumLedgeHeight + ForwardCheckCapsuleHalfHeight) * FVector::UpVector;
 	FVector ForwardEndLocation = ForwardStartLocation + CachedCharacterOwner->GetActorForwardVector() * ForwardCheckDistance;
 
-	float DrawTime = 2.0f;
-
-	if (!GCTraceUtils::SweepCapsuleSingleByProfile(GetWorld(), ForwardCheckHitResult, ForwardStartLocation, ForwardEndLocation, ForwardCheckCapsuleRadius, ForwardCheckCapsuleHalfHeight, FQuat::Identity, ECC_Climbing, QueryParams, FCollisionResponseParams::DefaultResponseParam, true, DrawTime))
+	if (!GCTraceUtils::SweepCapsuleSingleByProfile(GetWorld(), ForwardCheckHitResult, ForwardStartLocation, ForwardEndLocation, ForwardCheckCapsuleRadius, ForwardCheckCapsuleHalfHeight, FQuat::Identity, ECC_Climbing, QueryParams, FCollisionResponseParams::DefaultResponseParam, bIsDebugEnabled, DrawTime))
 	{
 		return false;
 	}
@@ -57,7 +69,7 @@ bool ULedgeDetectorComponents::DetectLedge(OUT FLedgeDescription& LedgeDescripti
 
 
 
-	if (!GCTraceUtils::SweepSphereSingleByProfile(GetWorld(), DownwardCheckHitResult, DownwardStartLocation, DownwardEndLocation, DownwardSphereCheckRadius, ECC_Climbing, QueryParams, FCollisionResponseParams::DefaultResponseParam, true, DrawTime))
+	if (!GCTraceUtils::SweepSphereSingleByProfile(GetWorld(), DownwardCheckHitResult, DownwardStartLocation, DownwardEndLocation, DownwardSphereCheckRadius, ECC_Climbing, QueryParams, FCollisionResponseParams::DefaultResponseParam, bIsDebugEnabled, DrawTime))
 	{
 		return false;
 	}
@@ -71,7 +83,7 @@ bool ULedgeDetectorComponents::DetectLedge(OUT FLedgeDescription& LedgeDescripti
 
 
 
-	if (GCTraceUtils::OverlapCapsuleByProfile(GetWorld(), OverlapLocation, OverlapCapsuleRadius, OverlapCapsuleHalfHeight, FQuat::Identity, FName("Pawn"), QueryParams, true, DrawTime))
+	if (GCTraceUtils::OverlapCapsuleByProfile(GetWorld(), OverlapLocation, OverlapCapsuleRadius, OverlapCapsuleHalfHeight, FQuat::Identity, CollisionProfilePawn, QueryParams, bIsDebugEnabled, DrawTime))
 	{
 		false;
 	}
