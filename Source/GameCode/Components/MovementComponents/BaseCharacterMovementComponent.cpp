@@ -65,6 +65,48 @@ void UBaseCharacterMovementComponent::DelayedFunction()
 	return;
 }
 
+void UBaseCharacterMovementComponent::StartPullUp(const FLedgeDescription& LedgeDescription)
+{
+	TargetLedge = LedgeDescription;
+	SetMovementMode(EMovementMode::MOVE_Custom, (uint8)ECustomMovementMode::CMOVE_PullUp);
+}
+
+void UBaseCharacterMovementComponent::EndPullUp()
+{
+	SetMovementMode(MOVE_Walking);
+}
+
+bool UBaseCharacterMovementComponent::IsPullUp() const
+{
+	return UpdatedComponent && EMovementMode::MOVE_Custom && CustomMovementMode == (uint8)ECustomMovementMode::CMOVE_PullUp;
+}
+
+void UBaseCharacterMovementComponent::PhysCustom(float DeltaTime, int32 Iterations)
+{
+	switch (CustomMovementMode)
+	{
+	case (uint8)ECustomMovementMode::CMOVE_PullUp:
+	{
+		float ProgressRatio = GetWorld()->GetTimerManager().GetTimerElapsed(PullUpTimer) / TargetPullUpTime;
+		FVector NewLocation = FMath::Lerp(InitialPullUpPositsion, TargetLedge.Location, ProgressRatio);
+		FRotator NewRotation = FMath::Lerp(InitialPullUpRotation, TargetLedge.Rotation, ProgressRatio);
+
+		FVector Delta = NewLocation - GetActorLocation();
+
+
+		FHitResult Hit;
+		SafeMoveUpdatedComponent(Delta, NewRotation, false, Hit);
+
+		break;
+	}
+	default:
+		break;
+	}
+
+
+	Super::PhysCustom(DeltaTime, Iterations);
+}
+
 void UBaseCharacterMovementComponent::OnMovementModeChanged(EMovementMode PreviousMovementMove, uint8 PreviousCustomMode)
 {
 	Super::OnMovementModeChanged(PreviousMovementMove, PreviousCustomMode);
@@ -77,6 +119,23 @@ void UBaseCharacterMovementComponent::OnMovementModeChanged(EMovementMode Previo
 	{
 		ACharacter* DefaultCharacter = CharacterOwner->GetClass()->GetDefaultObject<ACharacter>();
 		CharacterOwner->GetCapsuleComponent()->SetCapsuleSize(DefaultCharacter->GetCapsuleComponent()->GetUnscaledCapsuleRadius(), DefaultCharacter->GetCapsuleComponent()->GetUnscaledCapsuleHalfHeight(), true);
+	}
+
+	if (MovementMode == MOVE_Custom)
+	{
+		switch (CustomMovementMode)
+		{
+			case (uint8)ECustomMovementMode::CMOVE_PullUp:
+			{
+				InitialPullUpPositsion = GetActorLocation();
+				InitialPullUpRotation = GetOwner()->GetActorRotation();
+				TargetPullUpTime = 0.25f;
+				GetWorld()->GetTimerManager().SetTimer(PullUpTimer, this, &UBaseCharacterMovementComponent::EndPullUp, TargetPullUpTime, false);
+			}
+
+			default:
+				break;
+		}
 	}
 }
 	

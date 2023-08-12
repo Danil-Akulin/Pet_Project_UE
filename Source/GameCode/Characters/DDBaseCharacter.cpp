@@ -46,14 +46,20 @@ void ADDBaseCharacter::Tick(float DeltaTime)
 	TryChangeSprintState();
 }
 
+bool ADDBaseCharacter::CanJumpInternal_Implementation() const
+{
+	return Super::CanJumpInternal_Implementation() && !GetBaseCharacterMovementComponent()->IsPullUp();
+}
+
 void ADDBaseCharacter::PullUp()
 {
 	FLedgeDescription LedgeDiscriptin;
 	if (LedgeDetectorComponent->DetectLedge(LedgeDiscriptin))
 	{
-		// to do
+		GetBaseCharacterMovementComponent()->StartPullUp(LedgeDiscriptin);
 	}
 }
+
 
 bool ADDBaseCharacter::CanSprint()
 {

@@ -5,7 +5,18 @@
 #include "CoreMinimal.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "../../Characters/Animations/DDBaseCharacterAnimInstance.h"
+#include <GameCode/LedgeDetectorComponents.h>
 #include "BaseCharacterMovementComponent.generated.h"
+
+
+UENUM(BlueprintType)
+enum class ECustomMovementMode : uint8
+{
+	CMOVE_None = 0 UMETA(DisplayName = "None"),
+	CMOVE_PullUp UMETA(DisplayName = "PullUp"),
+	CMOVE_Max UMETA(Hidden)
+};
+
 
 /**
  * 
@@ -27,7 +38,14 @@ public:
 	void UpdateStamina();
 	void DelayedFunction();
 
+
+	void StartPullUp(const FLedgeDescription& LedgeDescription);
+	void EndPullUp();
+	bool IsPullUp() const;
+
 protected:
+
+	virtual void PhysCustom(float DeltaTime, int32 Iterations) override;
 
 	virtual void OnMovementModeChanged(EMovementMode PreviousMovementMove, uint8 PreviousCustomMode) override;
 
@@ -49,5 +67,13 @@ private:
 	FTimerHandle TimerHandle_Delay;
 
 	float DelaySeconds = 3.0f;
+
+
+	FLedgeDescription TargetLedge;
+	float TargetPullUpTime = 1.0f;
+	FVector InitialPullUpPositsion;
+	FRotator InitialPullUpRotation;
+
+	FTimerHandle PullUpTimer;
 
 };

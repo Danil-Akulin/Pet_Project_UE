@@ -28,7 +28,9 @@ public:
 	virtual void StartSprint();
 	virtual void StopSprint();
 
-	virtual void Tick(float DeltaTime) override;	
+	virtual void Tick(float DeltaTime) override;
+
+	virtual bool CanJumpInternal_Implementation() const override;
 
 	virtual void SwimForward(float Value) {};
 	virtual void SwimRight(float Value) {};
@@ -36,7 +38,7 @@ public:
 
 	virtual void PullUp();
 
-	FORCEINLINE UBaseCharacterMovementComponent* GetBaseCharacterMovementComponent() { return BaseCharacterMovementComponent; }
+	FORCEINLINE UBaseCharacterMovementComponent* GetBaseCharacterMovementComponent() const { return BaseCharacterMovementComponent; }
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Character | Movement")
 	class ULedgeDetectorComponents* LedgeDetectorComponent;
