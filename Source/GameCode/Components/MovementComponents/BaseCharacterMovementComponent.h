@@ -9,6 +9,22 @@
 #include "BaseCharacterMovementComponent.generated.h"
 
 
+struct FPullUpMovementParameters
+{
+	FVector InitialLocation = FVector::ZeroVector;
+	FRotator InitialRotation = FRotator::ZeroRotator;
+
+	FVector TargetLocation = FVector::ZeroVector;
+	FRotator TargetRotation = FRotator::ZeroRotator;
+
+
+	float Duration = 1.0f;
+	float StartTime = 0.0f;
+
+	UCurveVector* PullUpCurve;
+};
+
+
 UENUM(BlueprintType)
 enum class ECustomMovementMode : uint8
 {
@@ -38,8 +54,8 @@ public:
 	void UpdateStamina();
 	void DelayedFunction();
 
+	void StartPullUp(const FPullUpMovementParameters& PullUpParameters);
 
-	void StartPullUp(const FLedgeDescription& LedgeDescription);
 	void EndPullUp();
 	bool IsPullUp() const;
 
@@ -69,10 +85,7 @@ private:
 	float DelaySeconds = 3.0f;
 
 
-	FLedgeDescription TargetLedge;
-	float TargetPullUpTime = 1.0f;
-	FVector InitialPullUpPositsion;
-	FRotator InitialPullUpRotation;
+	FPullUpMovementParameters CurrentPullUpParameters;
 
 	FTimerHandle PullUpTimer;
 

@@ -1,10 +1,11 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+﻿// Fill out your copyright notice in the Description page of Project Settings.
 
 
 #include "BaseCharacterMovementComponent.h"
 #include "../../Characters/Animations/DDBaseCharacterAnimInstance.h"
 #include "GameFramework/Character.h"
 #include "Components/CapsuleComponent.h"
+#include "Curves/CurveVector.h"
 
 float UBaseCharacterMovementComponent::GetMaxSpeed() const
 {
@@ -65,9 +66,9 @@ void UBaseCharacterMovementComponent::DelayedFunction()
 	return;
 }
 
-void UBaseCharacterMovementComponent::StartPullUp(const FLedgeDescription& LedgeDescription)
+void UBaseCharacterMovementComponent::StartPullUp(const FPullUpMovementParameters& PullUpParameters)
 {
-	TargetLedge = LedgeDescription;
+	CurrentPullUpParameters = PullUpParameters;
 	SetMovementMode(EMovementMode::MOVE_Custom, (uint8)ECustomMovementMode::CMOVE_PullUp);
 }
 
@@ -87,9 +88,15 @@ void UBaseCharacterMovementComponent::PhysCustom(float DeltaTime, int32 Iteratio
 	{
 	case (uint8)ECustomMovementMode::CMOVE_PullUp:
 	{
-		float ProgressRatio = GetWorld()->GetTimerManager().GetTimerElapsed(PullUpTimer) / TargetPullUpTime;
-		FVector NewLocation = FMath::Lerp(InitialPullUpPositsion, TargetLedge.Location, ProgressRatio);
-		FRotator NewRotation = FMath::Lerp(InitialPullUpRotation, TargetLedge.Rotation, ProgressRatio);
+		float ElapseTime = GetWorld()->GetTimerManager().GetTimerElapsed(PullUpTimer) + CurrentPullUpParameters.StartTime; //возвращает кол-во секунд с момента запуска
+
+		FVector PullUpCurveValue = CurrentPullUpParameters.PullUpCurve->GetVectorValue(ElapseTime);
+
+		float PositsionAlpha = PullUpCurveValue.X;
+
+		FVector NewLocation = FMath::Lerp(CurrentPullUpParameters.InitialLocation, CurrentPullUpParameters.TargetLocation, PositsionAlpha);
+		FRotator NewRotation = FMath::Lerp(CurrentPullUpParameters.InitialRotation, CurrentPullUpParameters.TargetRotation, PositsionAlpha);
+
 
 		FVector Delta = NewLocation - GetActorLocation();
 
@@ -127,10 +134,7 @@ void UBaseCharacterMovementComponent::OnMovementModeChanged(EMovementMode Previo
 		{
 			case (uint8)ECustomMovementMode::CMOVE_PullUp:
 			{
-				InitialPullUpPositsion = GetActorLocation();
-				InitialPullUpRotation = GetOwner()->GetActorRotation();
-				TargetPullUpTime = 0.25f;
-				GetWorld()->GetTimerManager().SetTimer(PullUpTimer, this, &UBaseCharacterMovementComponent::EndPullUp, TargetPullUpTime, false);
+				GetWorld()->GetTimerManager().SetTimer(PullUpTimer, this, &UBaseCharacterMovementComponent::EndPullUp, CurrentPullUpParameters.Duration, false);
 			}
 
 			default:

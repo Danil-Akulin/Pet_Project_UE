@@ -4,7 +4,34 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "Curves/CurveVector.h"
 #include "DDBaseCharacter.generated.h"
+
+USTRUCT(BlueprintType)
+struct FPullUpSettings
+{
+	GENERATED_BODY();
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	class UAnimMontage* PullUpMontage;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
+	class UCurveVector* PullUpCurve;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (ClampMin = 0.0f, UIMin = 0.0f))
+	float MaxHeight = 200.0f;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (ClampMin = 0.0f, UIMin = 0.0f))
+	float MinHeight = 100.0f;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (ClampMin = 0.0f, UIMin = 0.0f))
+	float MaxHeightStartTime = 0.0f;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (ClampMin = 0.0f, UIMin = 0.0f))
+	float MinHeightStartTime = 0.5f;
+
+};
+
 
 
 class UBaseCharacterMovementComponent;
@@ -52,7 +79,9 @@ protected:
 
 	UBaseCharacterMovementComponent* BaseCharacterMovementComponent;
 
-
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Character | PullUp")
+	FPullUpSettings HighPullUpSettings;
+	
 private:
 
 	void TryChangeSprintState();

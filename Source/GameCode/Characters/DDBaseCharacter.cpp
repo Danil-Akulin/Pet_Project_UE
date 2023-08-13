@@ -56,7 +56,30 @@ void ADDBaseCharacter::PullUp()
 	FLedgeDescription LedgeDiscriptin;
 	if (LedgeDetectorComponent->DetectLedge(LedgeDiscriptin))
 	{
-		GetBaseCharacterMovementComponent()->StartPullUp(LedgeDiscriptin);
+		FPullUpMovementParameters PullUpParameters;
+		PullUpParameters.PullUpCurve = HighPullUpSettings.PullUpCurve;
+		PullUpParameters.InitialLocation = GetActorLocation();
+		PullUpParameters.InitialRotation = GetActorRotation();
+		PullUpParameters.TargetLocation = LedgeDiscriptin.Location;
+		PullUpParameters.TargetRotation = LedgeDiscriptin.Rotation;
+
+		float MinRange;
+		float MaxRange;	
+
+		HighPullUpSettings.PullUpCurve->GetTimeRange(MinRange, MaxRange);
+
+		PullUpParameters.Duration = MaxRange - MinRange;
+
+		float PullUpHeight = (PullUpParameters.TargetLocation - PullUpParameters.InitialLocation).Z;
+
+		FVector2D SourceRange(HighPullUpSettings.MinHeight, HighPullUpSettings.MaxHeight);
+		FVector2D TargetRange(HighPullUpSettings.MinHeightStartTime, HighPullUpSettings.MaxHeightStartTime);
+		PullUpParameters.StartTime = FMath::GetMappedRangeValueClamped(SourceRange, TargetRange, PullUpHeight);
+
+		GetBaseCharacterMovementComponent()->StartPullUp(PullUpParameters);
+
+		UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+		AnimInstance->Montage_Play(HighPullUpSettings.PullUpMontage, 1.0f, EMontagePlayReturnType::Duration, PullUpParameters.StartTime);
 	}
 }
 
