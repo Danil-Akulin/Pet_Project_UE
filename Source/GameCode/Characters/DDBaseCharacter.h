@@ -19,6 +19,12 @@ struct FPullUpSettings
 	class UCurveVector* PullUpCurve;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (ClampMin = 0.0f, UIMin = 0.0f))
+	float AnimationCorrectionXY = 65.0f;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (ClampMin = 0.0f, UIMin = 0.0f))
+	float AnimationCorrectionZ = 200.0f;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (ClampMin = 0.0f, UIMin = 0.0f))
 	float MaxHeight = 200.0f;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, meta = (ClampMin = 0.0f, UIMin = 0.0f))
@@ -70,6 +76,7 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Character | Movement")
 	class ULedgeDetectorComponents* LedgeDetectorComponent;
 
+
 protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character | Movement")
@@ -82,9 +89,21 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Character | PullUp")
 	FPullUpSettings HighPullUpSettings;
 	
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Character | PullUp")
+	FPullUpSettings LowPullUpSettings;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Character | PullUp", meta = (ClampMin = 0.0f, UIMin = 0.0f))
+	float LowPullUpMaxHeight = 125.0f;
+
 private:
 
 	void TryChangeSprintState();
 	bool bIsSprintRequested = false;
 
+	const FPullUpSettings& GetPullUpSettings(float LedgeHeight) const;
+
+	void ResetPullUpFlag();
+
+	bool bIsPullingUp = false;
+	FTimerHandle PullUpResetTimer;
 };

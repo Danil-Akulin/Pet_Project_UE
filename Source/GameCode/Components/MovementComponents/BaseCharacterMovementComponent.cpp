@@ -70,6 +70,7 @@ void UBaseCharacterMovementComponent::StartPullUp(const FPullUpMovementParameter
 {
 	CurrentPullUpParameters = PullUpParameters;
 	SetMovementMode(EMovementMode::MOVE_Custom, (uint8)ECustomMovementMode::CMOVE_PullUp);
+
 }
 
 void UBaseCharacterMovementComponent::EndPullUp()
@@ -93,8 +94,13 @@ void UBaseCharacterMovementComponent::PhysCustom(float DeltaTime, int32 Iteratio
 		FVector PullUpCurveValue = CurrentPullUpParameters.PullUpCurve->GetVectorValue(ElapseTime);
 
 		float PositsionAlpha = PullUpCurveValue.X;
+		float XYCorrectionAlpha = PullUpCurveValue.Y;
+		float ZCorrectionAlpha = PullUpCurveValue.Z;
 
-		FVector NewLocation = FMath::Lerp(CurrentPullUpParameters.InitialLocation, CurrentPullUpParameters.TargetLocation, PositsionAlpha);
+		FVector CorrectedInitialLocation = FMath::Lerp(CurrentPullUpParameters.InitialLocation, CurrentPullUpParameters.InitialAnimationLocation, XYCorrectionAlpha);
+		CorrectedInitialLocation.Z = FMath::Lerp(CurrentPullUpParameters.InitialLocation.Z, CurrentPullUpParameters.InitialAnimationLocation.Z, ZCorrectionAlpha);
+
+		FVector NewLocation = FMath::Lerp(CorrectedInitialLocation, CurrentPullUpParameters.TargetLocation, PositsionAlpha);
 		FRotator NewRotation = FMath::Lerp(CurrentPullUpParameters.InitialRotation, CurrentPullUpParameters.TargetRotation, PositsionAlpha);
 
 
@@ -103,7 +109,6 @@ void UBaseCharacterMovementComponent::PhysCustom(float DeltaTime, int32 Iteratio
 
 		FHitResult Hit;
 		SafeMoveUpdatedComponent(Delta, NewRotation, false, Hit);
-
 		break;
 	}
 	default:

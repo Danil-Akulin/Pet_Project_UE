@@ -16,10 +16,12 @@ struct FLedgeDescription
 	FVector Location;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Ledge description")
+	FVector LedgeNormal;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Ledge description")
 	FRotator Rotation;
 
 };
-
 
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
@@ -48,4 +50,6 @@ protected:
 private:
 	TWeakObjectPtr<class ACharacter> CachedCharacterOwner;
 		
+	class CharacterMovement;
+
 };

@@ -17,6 +17,7 @@ struct FPullUpMovementParameters
 	FVector TargetLocation = FVector::ZeroVector;
 	FRotator TargetRotation = FRotator::ZeroRotator;
 
+	FVector InitialAnimationLocation = FVector::ZeroVector;
 
 	float Duration = 1.0f;
 	float StartTime = 0.0f;
@@ -33,10 +34,6 @@ enum class ECustomMovementMode : uint8
 	CMOVE_Max UMETA(Hidden)
 };
 
-
-/**
- * 
- */
 UCLASS()
 class GAMECODE_API UBaseCharacterMovementComponent : public UCharacterMovementComponent
 {
@@ -58,6 +55,7 @@ public:
 
 	void EndPullUp();
 	bool IsPullUp() const;
+
 
 protected:
 

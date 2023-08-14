@@ -56,6 +56,7 @@ void ADDBaseCharacter::PullUp()
 	FLedgeDescription LedgeDiscriptin;
 	if (LedgeDetectorComponent->DetectLedge(LedgeDiscriptin))
 	{
+
 		FPullUpMovementParameters PullUpParameters;
 		PullUpParameters.PullUpCurve = HighPullUpSettings.PullUpCurve;
 		PullUpParameters.InitialLocation = GetActorLocation();
@@ -63,24 +64,42 @@ void ADDBaseCharacter::PullUp()
 		PullUpParameters.TargetLocation = LedgeDiscriptin.Location;
 		PullUpParameters.TargetRotation = LedgeDiscriptin.Rotation;
 
+		float PullUpHeight = (PullUpParameters.TargetLocation - PullUpParameters.InitialLocation).Z;
+
+		const FPullUpSettings& PullUpSettings = GetPullUpSettings(PullUpHeight);
+
 		float MinRange;
 		float MaxRange;	
-
-		HighPullUpSettings.PullUpCurve->GetTimeRange(MinRange, MaxRange);
+		PullUpSettings.PullUpCurve->GetTimeRange(MinRange, MaxRange);
 
 		PullUpParameters.Duration = MaxRange - MinRange;
 
-		float PullUpHeight = (PullUpParameters.TargetLocation - PullUpParameters.InitialLocation).Z;
-
-		FVector2D SourceRange(HighPullUpSettings.MinHeight, HighPullUpSettings.MaxHeight);
-		FVector2D TargetRange(HighPullUpSettings.MinHeightStartTime, HighPullUpSettings.MaxHeightStartTime);
+		PullUpParameters.PullUpCurve = PullUpSettings.PullUpCurve;
+		FVector2D SourceRange(PullUpSettings.MinHeight, PullUpSettings.MaxHeight);
+		FVector2D TargetRange(PullUpSettings.MinHeightStartTime, PullUpSettings.MaxHeightStartTime);
 		PullUpParameters.StartTime = FMath::GetMappedRangeValueClamped(SourceRange, TargetRange, PullUpHeight);
 
+		PullUpParameters.InitialAnimationLocation = PullUpParameters.TargetLocation - PullUpSettings.AnimationCorrectionZ * FVector::UpVector + PullUpSettings.AnimationCorrectionXY * LedgeDiscriptin.LedgeNormal;
+
+		if (bIsPullingUp)
+		{
+			return;
+		}
+		bIsPullingUp = true;
 		GetBaseCharacterMovementComponent()->StartPullUp(PullUpParameters);
 
 		UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
-		AnimInstance->Montage_Play(HighPullUpSettings.PullUpMontage, 1.0f, EMontagePlayReturnType::Duration, PullUpParameters.StartTime);
+		AnimInstance->Montage_Play(PullUpSettings.PullUpMontage, 1.0f, EMontagePlayReturnType::Duration, PullUpParameters.StartTime);
+
+		float AnimationDuration = PullUpSettings.PullUpMontage->GetPlayLength();
+		GetWorldTimerManager().SetTimer(PullUpResetTimer, this, &ADDBaseCharacter::ResetPullUpFlag, AnimationDuration, false);
+
 	}
+}
+
+void ADDBaseCharacter::ResetPullUpFlag()
+{
+	bIsPullingUp = false;
 }
 
 
@@ -100,5 +119,10 @@ void ADDBaseCharacter::TryChangeSprintState()
 	{
 		BaseCharacterMovementComponent->StopSprint();
 	}
+}
+
+const FPullUpSettings& ADDBaseCharacter::GetPullUpSettings(float LedgeHeight) const
+{
+	return LedgeHeight > LowPullUpMaxHeight ? HighPullUpSettings : LowPullUpSettings;
 }
 
