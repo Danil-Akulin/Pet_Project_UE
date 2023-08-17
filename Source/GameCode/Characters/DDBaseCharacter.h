@@ -39,7 +39,7 @@ struct FPullUpSettings
 };
 
 
-
+class AInteractiveActor;
 class UBaseCharacterMovementComponent;
 UCLASS(Abstract, NotBlueprintable)
 class GAMECODE_API ADDBaseCharacter : public ACharacter
@@ -76,6 +76,8 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Character | Movement")
 	class ULedgeDetectorComponents* LedgeDetectorComponent;
 
+	void RegisterInteractiveActor(AInteractiveActor* InteractiveActor);
+	void UnRegisterInteractiveActor(AInteractiveActor* InteractiveActor);
 
 protected:
 
@@ -106,4 +108,7 @@ private:
 
 	bool bIsPullingUp = false;
 	FTimerHandle PullUpResetTimer;
+
+
+	TArray<AInteractiveActor*> AvailableInteractiveActors;
 };

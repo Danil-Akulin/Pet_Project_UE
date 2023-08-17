@@ -97,6 +97,16 @@ void ADDBaseCharacter::PullUp()
 	}
 }
 
+void ADDBaseCharacter::RegisterInteractiveActor(AInteractiveActor* InteractiveActor)
+{
+	AvailableInteractiveActors.Add(InteractiveActor);
+}
+
+void ADDBaseCharacter::UnRegisterInteractiveActor(AInteractiveActor* InteractiveActor)
+{
+	AvailableInteractiveActors.Remove(InteractiveActor);
+}
+
 void ADDBaseCharacter::ResetPullUpFlag()
 {
 	bIsPullingUp = false;
