@@ -79,6 +79,10 @@ public:
 	void RegisterInteractiveActor(AInteractiveActor* InteractiveActor);
 	void UnRegisterInteractiveActor(AInteractiveActor* InteractiveActor);
 
+	void PullUpLadder(float Value);
+	void InteractionWithLadder();
+	const class ALadder* GetAvailableLadder() const;
+
 protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character | Movement")
@@ -96,6 +100,7 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Character | PullUp", meta = (ClampMin = 0.0f, UIMin = 0.0f))
 	float LowPullUpMaxHeight = 125.0f;
+
 
 private:
 

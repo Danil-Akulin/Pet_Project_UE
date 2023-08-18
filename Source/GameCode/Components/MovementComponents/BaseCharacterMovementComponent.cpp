@@ -14,6 +14,10 @@ float UBaseCharacterMovementComponent::GetMaxSpeed() const
 	{
 		Result = SprintSpeed;
 	}
+	else if (IsOnLadder())
+	{
+		Result = PullUpOnLadderMaxSpeed;
+	}
 	return Result;
 }
 
@@ -83,38 +87,44 @@ bool UBaseCharacterMovementComponent::IsPullUp() const
 	return UpdatedComponent && EMovementMode::MOVE_Custom && CustomMovementMode == (uint8)ECustomMovementMode::CMOVE_PullUp;
 }
 
+void UBaseCharacterMovementComponent::AttachToLadder(const ALadder* Ladder)
+{
+	CurrentLadder = Ladder;
+	SetMovementMode(MOVE_Custom, (uint8)ECustomMovementMode::CMOVE_Ladder);
+}
+
+void UBaseCharacterMovementComponent::DetachFromLadder()
+{
+	SetMovementMode(MOVE_Falling);
+}
+
+bool UBaseCharacterMovementComponent::IsOnLadder() const
+{
+	return UpdatedComponent && EMovementMode::MOVE_Custom && CustomMovementMode == (uint8)ECustomMovementMode::CMOVE_Ladder;
+}
+
+const ALadder* UBaseCharacterMovementComponent::GetCurrentLadder()
+{
+	return CurrentLadder;
+}
+
 void UBaseCharacterMovementComponent::PhysCustom(float DeltaTime, int32 Iterations)
 {
 	switch (CustomMovementMode)
 	{
 	case (uint8)ECustomMovementMode::CMOVE_PullUp:
 	{
-		float ElapseTime = GetWorld()->GetTimerManager().GetTimerElapsed(PullUpTimer) + CurrentPullUpParameters.StartTime; //возвращает кол-во секунд с момента запуска
-
-		FVector PullUpCurveValue = CurrentPullUpParameters.PullUpCurve->GetVectorValue(ElapseTime);
-
-		float PositsionAlpha = PullUpCurveValue.X;
-		float XYCorrectionAlpha = PullUpCurveValue.Y;
-		float ZCorrectionAlpha = PullUpCurveValue.Z;
-
-		FVector CorrectedInitialLocation = FMath::Lerp(CurrentPullUpParameters.InitialLocation, CurrentPullUpParameters.InitialAnimationLocation, XYCorrectionAlpha);
-		CorrectedInitialLocation.Z = FMath::Lerp(CurrentPullUpParameters.InitialLocation.Z, CurrentPullUpParameters.InitialAnimationLocation.Z, ZCorrectionAlpha);
-
-		FVector NewLocation = FMath::Lerp(CorrectedInitialLocation, CurrentPullUpParameters.TargetLocation, PositsionAlpha);
-		FRotator NewRotation = FMath::Lerp(CurrentPullUpParameters.InitialRotation, CurrentPullUpParameters.TargetRotation, PositsionAlpha);
-
-
-		FVector Delta = NewLocation - GetActorLocation();
-
-
-		FHitResult Hit;
-		SafeMoveUpdatedComponent(Delta, NewRotation, false, Hit);
+		PhysPullUp(DeltaTime, Iterations);
+		break;
+	}
+	case (uint8)ECustomMovementMode::CMOVE_Ladder:
+	{
+		PhysLadder(DeltaTime, Iterations);
 		break;
 	}
 	default:
 		break;
 	}
-
 
 	Super::PhysCustom(DeltaTime, Iterations);
 }
@@ -133,6 +143,11 @@ void UBaseCharacterMovementComponent::OnMovementModeChanged(EMovementMode Previo
 		CharacterOwner->GetCapsuleComponent()->SetCapsuleSize(DefaultCharacter->GetCapsuleComponent()->GetUnscaledCapsuleRadius(), DefaultCharacter->GetCapsuleComponent()->GetUnscaledCapsuleHalfHeight(), true);
 	}
 
+	if (PreviousMovementMove == MOVE_Custom && PreviousMovementMove == (uint8)ECustomMovementMode::CMOVE_Ladder)
+	{
+		CurrentLadder = nullptr;
+	}
+
 	if (MovementMode == MOVE_Custom)
 	{
 		switch (CustomMovementMode)
@@ -148,3 +163,36 @@ void UBaseCharacterMovementComponent::OnMovementModeChanged(EMovementMode Previo
 	}
 }
 	
+void UBaseCharacterMovementComponent::PhysPullUp(float DeltaTime, int32 Iterations)
+{
+	float ElapseTime = GetWorld()->GetTimerManager().GetTimerElapsed(PullUpTimer) + CurrentPullUpParameters.StartTime; //возвращает кол-во секунд с момента запуска
+
+	FVector PullUpCurveValue = CurrentPullUpParameters.PullUpCurve->GetVectorValue(ElapseTime);
+
+	float PositsionAlpha = PullUpCurveValue.X;
+	float XYCorrectionAlpha = PullUpCurveValue.Y;
+	float ZCorrectionAlpha = PullUpCurveValue.Z;
+
+	FVector CorrectedInitialLocation = FMath::Lerp(CurrentPullUpParameters.InitialLocation, CurrentPullUpParameters.InitialAnimationLocation, XYCorrectionAlpha);
+	CorrectedInitialLocation.Z = FMath::Lerp(CurrentPullUpParameters.InitialLocation.Z, CurrentPullUpParameters.InitialAnimationLocation.Z, ZCorrectionAlpha);
+
+	FVector NewLocation = FMath::Lerp(CorrectedInitialLocation, CurrentPullUpParameters.TargetLocation, PositsionAlpha);
+	FRotator NewRotation = FMath::Lerp(CurrentPullUpParameters.InitialRotation, CurrentPullUpParameters.TargetRotation, PositsionAlpha);
+
+
+	FVector Delta = NewLocation - GetActorLocation();
+
+
+	FHitResult Hit;
+	SafeMoveUpdatedComponent(Delta, NewRotation, false, Hit);
+}
+
+void UBaseCharacterMovementComponent::PhysLadder(float DeltaTime, int32 Iterations)
+{
+	CalcVelocity(DeltaTime, 1.0f, false, PullUpOnLadderBreakingDecelaretion);
+
+	FVector Delta = Velocity * DeltaTime;
+
+	FHitResult Hit;
+	SafeMoveUpdatedComponent(Delta, GetOwner()->GetActorRotation(), true, Hit);
+}

@@ -21,6 +21,8 @@ void ADDPlayerController::SetupInputComponent()
 	InputComponent->BindAxis("SwimForward", this, &ADDPlayerController::SwimForward);
 	InputComponent->BindAxis("SwimRight", this, &ADDPlayerController::SwimRight);
 	InputComponent->BindAxis("SwimUp", this, &ADDPlayerController::SwimUp);
+	InputComponent->BindAxis("PullUpLadder", this, &ADDPlayerController::PullUpLadderUp);
+	InputComponent->BindAction("InteractWithLadder", EInputEvent::IE_Pressed, this, &ADDPlayerController::InteractionWithLadder);
 	InputComponent->BindAction("PullUp", EInputEvent::IE_Pressed, this, &ADDPlayerController::PullUp);
 	InputComponent->BindAction("Jump", EInputEvent::IE_Pressed, this, &ADDPlayerController::Jump);
 	InputComponent->BindAction("Crouch", EInputEvent::IE_Pressed, this, &ADDPlayerController::ChangeCrouchState);
@@ -121,5 +123,21 @@ void ADDPlayerController::SwimUp(float Value)
 	if (CachedBaseCharacter.IsValid())
 	{
 		CachedBaseCharacter->SwimUp(Value);
+	}
+}
+
+void ADDPlayerController::PullUpLadderUp(float Value)
+{
+	if (CachedBaseCharacter.IsValid())
+	{
+		CachedBaseCharacter->PullUpLadder(Value);
+	}
+}
+
+void ADDPlayerController::InteractionWithLadder()
+{
+	if (CachedBaseCharacter.IsValid())
+	{
+		CachedBaseCharacter->InteractionWithLadder();
 	}
 }

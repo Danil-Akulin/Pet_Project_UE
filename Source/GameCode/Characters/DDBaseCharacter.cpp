@@ -5,6 +5,7 @@
 #include "GameFramework/CharacterMovementComponent.h"
 #include "../Components/MovementComponents/BaseCharacterMovementComponent.h"
 #include "../LedgeDetectorComponents.h"
+#include "../actors/Interactive/Environment/Ladder.h"
 
 ADDBaseCharacter::ADDBaseCharacter(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer.SetDefaultSubobjectClass<UBaseCharacterMovementComponent>(ACharacter::CharacterMovementComponentName))
@@ -116,6 +117,46 @@ void ADDBaseCharacter::ResetPullUpFlag()
 bool ADDBaseCharacter::CanSprint()
 {
 	return true;
+}
+
+void ADDBaseCharacter::PullUpLadder(float Value)
+{
+	if (GetBaseCharacterMovementComponent()->IsOnLadder() && !FMath::IsNearlyZero(Value))
+	{
+		FVector LadderUpVector = GetBaseCharacterMovementComponent()->GetCurrentLadder()->GetActorUpVector();
+		AddMovementInput(LadderUpVector, Value);
+	}
+}
+
+void ADDBaseCharacter::InteractionWithLadder()
+{
+	if (GetBaseCharacterMovementComponent()->IsOnLadder())
+	{
+		GetBaseCharacterMovementComponent()->DetachFromLadder();
+	}
+	else
+	{
+		const ALadder* AvailableLadder = GetAvailableLadder();
+		if (IsValid(AvailableLadder))
+		{
+			GetBaseCharacterMovementComponent()->AttachToLadder(AvailableLadder);
+		}
+
+	}
+}
+
+const ALadder* ADDBaseCharacter::GetAvailableLadder() const
+{
+	const ALadder* Result = nullptr;
+	for (const AInteractiveActor* InteractiveActor : AvailableInteractiveActors)
+	{
+		if (InteractiveActor->IsA<ALadder>())
+		{
+			Result = StaticCast<const ALadder*>(InteractiveActor);
+			break;
+		}
+	}
+	return Result;
 }
 
 void ADDBaseCharacter::TryChangeSprintState()

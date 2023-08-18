@@ -40,4 +40,6 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	UInstancedStaticMeshComponent* StepsMesh;
+
+	class UBoxComponent* GetLadderInteractionVolume() const;
 };

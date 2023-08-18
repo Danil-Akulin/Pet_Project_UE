@@ -5,15 +5,6 @@
 #include "../../Characters/DDBaseCharacter.h"
 #include "Components/CapsuleComponent.h "
 
-// Sets default values
-/*
-AInteractiveActor::AInteractiveActor()
-{
- 	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
-}*/
-
-// Called when the game starts or when spawned
 void AInteractiveActor::BeginPlay()
 {
 	Super::BeginPlay();
@@ -26,7 +17,7 @@ void AInteractiveActor::BeginPlay()
 void AInteractiveActor::OnInteractionVolumeOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	ADDBaseCharacter* BaseCharacter = Cast<ADDBaseCharacter>(OtherActor);
-	if (IsValid(BaseCharacter))
+	if (!IsValid(BaseCharacter))
 	{
 		return;
 	}
@@ -53,11 +44,3 @@ void AInteractiveActor::OnInteractionVolumeOverlapEnd(UPrimitiveComponent* Overl
 	}
 	BaseCharacter->UnRegisterInteractiveActor(this);
 }
-/*
-// Called every frame
-void AInteractiveActor::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
-}
-*/

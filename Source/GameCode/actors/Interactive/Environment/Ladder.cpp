@@ -6,6 +6,7 @@
 #include "Components/StaticMeshComponent.h"
 #include "Components/InstancedStaticMeshComponent.h"
 #include "Components/BoxComponent.h"
+#include "GameCode/DD_Types.h"
 
 ALadder::ALadder()
 {
@@ -22,6 +23,7 @@ ALadder::ALadder()
 
 	InteractionVolume = CreateDefaultSubobject<UBoxComponent>(TEXT("InteractionVolume"));
 	InteractionVolume->SetupAttachment(RootComponent);
+	InteractionVolume->SetCollisionProfileName("CollisionProfilePawnInteractionVolume");
 }
 
 void ALadder::OnConstruction(const FTransform& Transform)
@@ -68,5 +70,14 @@ void ALadder::OnConstruction(const FTransform& Transform)
 		FTransform InstanceTransform(FVector(0.0f, 0.0f, BottomStepOffset + i * StepsInterval));
 		StepsMesh->AddInstance(InstanceTransform);
 	}
+
+	float BoxDepthExtend = GetLadderInteractionVolume()->GetUnscaledBoxExtent().X;
+	GetLadderInteractionVolume()->SetBoxExtent(FVector(BoxDepthExtend, LadderWidth * 0.5f, LadderHeight * 0.5f));
+	GetLadderInteractionVolume()->SetRelativeLocation(FVector(BoxDepthExtend, 0.0f, LadderHeight * 0.5f));
+}
+
+UBoxComponent* ALadder::GetLadderInteractionVolume() const
+{
+	return StaticCast<UBoxComponent*>(InteractionVolume);
 }
 

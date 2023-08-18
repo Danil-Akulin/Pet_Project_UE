@@ -31,6 +31,7 @@ enum class ECustomMovementMode : uint8
 {
 	CMOVE_None = 0 UMETA(DisplayName = "None"),
 	CMOVE_PullUp UMETA(DisplayName = "PullUp"),
+	CMOVE_Ladder UMETA(DisplayName = "Ladder"),
 	CMOVE_Max UMETA(Hidden)
 };
 
@@ -56,10 +57,18 @@ public:
 	void EndPullUp();
 	bool IsPullUp() const;
 
+	void AttachToLadder(const class ALadder* Ladder);
+	void DetachFromLadder();
+	bool IsOnLadder() const;
+	const class ALadder* GetCurrentLadder();
 
 protected:
 
 	virtual void PhysCustom(float DeltaTime, int32 Iterations) override;
+
+	void PhysPullUp(float DeltaTime, int32 Iterations);
+
+	void PhysLadder(float DeltaTime, int32 Iterations);
 
 	virtual void OnMovementModeChanged(EMovementMode PreviousMovementMove, uint8 PreviousCustomMode) override;
 
@@ -72,6 +81,12 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character movement: Swimming", meta = (ClampMin = "0", UIMin = "0"))
 	float SwimmingCapsuleHalfHeight = 60.0f;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character movement: Ladder", meta = (ClampMin = "0", UIMin = "0"))
+	float PullUpOnLadderMaxSpeed = 200.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character movement: Ladder", meta = (ClampMin = "0", UIMin = "0"))
+	float PullUpOnLadderBreakingDecelaretion = 2048.0f;
+
 private:
 	bool bIsSprinting;
 
@@ -82,6 +97,7 @@ private:
 
 	float DelaySeconds = 3.0f;
 
+	const ALadder* CurrentLadder = nullptr;
 
 	FPullUpMovementParameters CurrentPullUpParameters;
 
