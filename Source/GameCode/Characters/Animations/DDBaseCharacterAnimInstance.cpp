@@ -27,5 +27,10 @@ void UDDBaseCharacterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 	bIsCrouching = CharacterMovement->IsCrouching();
 	bIsSprinting = CharacterMovement->IsSprinting();
 	bIsSwimming = CharacterMovement->IsSwimming();
+	bIsOnLadder = CharacterMovement->IsOnLadder();
+	if (bIsOnLadder)
+	{
+		LadderSpeedRatio = CharacterMovement->GetLadderSpeedRatio();
+	}
 }
  

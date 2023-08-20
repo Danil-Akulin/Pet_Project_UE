@@ -60,6 +60,8 @@ public:
 	void EndPullUp();
 	bool IsPullUp() const;
 
+	float GetLadderSpeedRatio() const;
+
 	void AttachToLadder(const class ALadder* Ladder);
 	void DetachFromLadder();
 	bool IsOnLadder() const;
@@ -73,7 +75,7 @@ protected:
 
 	void PhysLadder(float DeltaTime, int32 Iterations);
 
-	float GetCharacterToCurrentLadderProjection(const FVector& Location);
+	float GetCharacterToCurrentLadderProjection(const FVector& Location) const;
 
 	virtual void OnMovementModeChanged(EMovementMode PreviousMovementMove, uint8 PreviousCustomMode) override;
 

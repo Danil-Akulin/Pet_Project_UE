@@ -98,6 +98,13 @@ bool UBaseCharacterMovementComponent::IsPullUp() const
 	return UpdatedComponent && EMovementMode::MOVE_Custom && CustomMovementMode == (uint8)ECustomMovementMode::CMOVE_PullUp;
 }
 
+float UBaseCharacterMovementComponent::GetLadderSpeedRatio() const
+{
+	FVector LadderUpVector = CurrentLadder->GetActorUpVector();
+	return FVector::DotProduct(LadderUpVector, Velocity) / PullUpOnLadderMaxSpeed;
+
+}
+
 void UBaseCharacterMovementComponent::AttachToLadder(const ALadder* Ladder)
 {
 	CurrentLadder = Ladder;
@@ -240,7 +247,7 @@ void UBaseCharacterMovementComponent::PhysLadder(float DeltaTime, int32 Iteratio
 	SafeMoveUpdatedComponent(Delta, GetOwner()->GetActorRotation(), true, Hit);
 }
 
-float UBaseCharacterMovementComponent::GetCharacterToCurrentLadderProjection(const FVector& Location)
+float UBaseCharacterMovementComponent::GetCharacterToCurrentLadderProjection(const FVector& Location) const
 {
 	FVector LadderUpVector = CurrentLadder->GetActorUpVector();
 	FVector LadderToCharacterDistance = Location - CurrentLadder->GetActorLocation();
