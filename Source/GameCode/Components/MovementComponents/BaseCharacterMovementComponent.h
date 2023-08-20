@@ -42,6 +42,9 @@ class GAMECODE_API UBaseCharacterMovementComponent : public UCharacterMovementCo
 	
 
 public:
+
+	virtual void PhysicsRotation(float DeltaTime) override;
+
 	FORCEINLINE bool IsSprinting() { return bIsSprinting; };
 
 	virtual float GetMaxSpeed() const override;
@@ -70,6 +73,8 @@ protected:
 
 	void PhysLadder(float DeltaTime, int32 Iterations);
 
+	float GetCharacterToCurrentLadderProjection(const FVector& Location);
+
 	virtual void OnMovementModeChanged(EMovementMode PreviousMovementMove, uint8 PreviousCustomMode) override;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character movement: Sprint", meta = (ClampMin = 0.0f, UIMin = 0.0f))
@@ -86,6 +91,17 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character movement: Ladder", meta = (ClampMin = "0", UIMin = "0"))
 	float PullUpOnLadderBreakingDecelaretion = 2048.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character movement: Ladder", meta = (ClampMin = "0", UIMin = "0"))
+	float LadderToCharacterOffset = 60.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character movement: Ladder", meta = (ClampMin = "0", UIMin = "0"))
+	float MaxLadderHightTopOffset = 90.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character movement: Ladder", meta = (ClampMin = "0", UIMin = "0"))
+	float MinLadderBottomOffset = 90.0f;
+
+	class ADDBaseCharacter* GetBaseCharacterOwner() const;
 
 private:
 	bool bIsSprinting;

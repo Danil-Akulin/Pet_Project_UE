@@ -6,6 +6,17 @@
 #include "GameFramework/Character.h"
 #include "Components/CapsuleComponent.h"
 #include "Curves/CurveVector.h"
+#include "../../actors/Interactive/Environment/Ladder.h"
+#include "../../Characters/DDBaseCharacter.h"
+
+void UBaseCharacterMovementComponent::PhysicsRotation(float DeltaTime)
+{
+	if (IsOnLadder())
+	{
+		return;
+	}
+	Super::PhysicsRotation(DeltaTime);
+}
 
 float UBaseCharacterMovementComponent::GetMaxSpeed() const
 {
@@ -90,6 +101,19 @@ bool UBaseCharacterMovementComponent::IsPullUp() const
 void UBaseCharacterMovementComponent::AttachToLadder(const ALadder* Ladder)
 {
 	CurrentLadder = Ladder;
+
+	FRotator TargetOrientationRotation = CurrentLadder->GetActorForwardVector().ToOrientationRotator();
+	TargetOrientationRotation.Yaw += 180.0f;
+
+	FVector LadderUpVector = CurrentLadder->GetActorUpVector();
+	FVector LadderForwardVector = CurrentLadder->GetActorForwardVector();
+	float Projection = GetCharacterToCurrentLadderProjection(GetActorLocation());
+
+	FVector NewCharacterLocation = CurrentLadder->GetActorLocation() + Projection * LadderUpVector + LadderToCharacterOffset * LadderForwardVector;
+
+	GetOwner()->SetActorLocation(NewCharacterLocation);
+	GetOwner()->SetActorRotation(TargetOrientationRotation);
+
 	SetMovementMode(MOVE_Custom, (uint8)ECustomMovementMode::CMOVE_Ladder);
 }
 
@@ -162,6 +186,11 @@ void UBaseCharacterMovementComponent::OnMovementModeChanged(EMovementMode Previo
 		}
 	}
 }
+
+ADDBaseCharacter* UBaseCharacterMovementComponent::GetBaseCharacterOwner() const
+{
+	return StaticCast<ADDBaseCharacter*>(CharacterOwner);
+}
 	
 void UBaseCharacterMovementComponent::PhysPullUp(float DeltaTime, int32 Iterations)
 {
@@ -193,6 +222,27 @@ void UBaseCharacterMovementComponent::PhysLadder(float DeltaTime, int32 Iteratio
 
 	FVector Delta = Velocity * DeltaTime;
 
+	FVector NewPositsion = GetActorLocation() + Delta;
+	float NewPositsionProjection = GetCharacterToCurrentLadderProjection(NewPositsion);
+
+	if (NewPositsionProjection < MinLadderBottomOffset)
+	{
+		DetachFromLadder();
+		return;
+	}
+	else if (NewPositsionProjection > (CurrentLadder->GetLadderHeight() - MaxLadderHightTopOffset))
+	{
+		GetBaseCharacterOwner()->PullUp();
+		return;
+	}
+
 	FHitResult Hit;
 	SafeMoveUpdatedComponent(Delta, GetOwner()->GetActorRotation(), true, Hit);
+}
+
+float UBaseCharacterMovementComponent::GetCharacterToCurrentLadderProjection(const FVector& Location)
+{
+	FVector LadderUpVector = CurrentLadder->GetActorUpVector();
+	FVector LadderToCharacterDistance = Location - CurrentLadder->GetActorLocation();
+	return FVector::DotProduct(LadderUpVector, LadderToCharacterDistance);
 }

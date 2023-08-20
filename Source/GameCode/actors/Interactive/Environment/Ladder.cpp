@@ -76,6 +76,11 @@ void ALadder::OnConstruction(const FTransform& Transform)
 	GetLadderInteractionVolume()->SetRelativeLocation(FVector(BoxDepthExtend, 0.0f, LadderHeight * 0.5f));
 }
 
+float ALadder::GetLadderHeight() const
+{
+	return LadderHeight;
+}
+
 UBoxComponent* ALadder::GetLadderInteractionVolume() const
 {
 	return StaticCast<UBoxComponent*>(InteractionVolume);
