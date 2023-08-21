@@ -66,7 +66,7 @@ void ADDPlayerController::PullUp()
 {
 	if (CachedBaseCharacter.IsValid())
 	{
-		CachedBaseCharacter->PullUp();
+		CachedBaseCharacter->PullUp(true);
 	}
 }
 

@@ -52,8 +52,14 @@ bool ADDBaseCharacter::CanJumpInternal_Implementation() const
 	return Super::CanJumpInternal_Implementation() && !GetBaseCharacterMovementComponent()->IsPullUp();
 }
 
-void ADDBaseCharacter::PullUp()
+void ADDBaseCharacter::PullUp(bool bForce /*= false*/)
 {
+
+	if (!(CanPullUp() || bForce))
+	{
+		return;
+	}
+
 	FLedgeDescription LedgeDiscriptin;
 	if (LedgeDetectorComponent->DetectLedge(LedgeDiscriptin))
 	{
@@ -118,6 +124,11 @@ bool ADDBaseCharacter::CanSprint()
 	return true;
 }
 
+bool ADDBaseCharacter::CanPullUp() const
+{
+	return !GetBaseCharacterMovementComponent()->IsOnLadder();
+}
+
 void ADDBaseCharacter::PullUpLadder(float Value)
 {
 	if (GetBaseCharacterMovementComponent()->IsOnLadder() && !FMath::IsNearlyZero(Value))
@@ -138,6 +149,10 @@ void ADDBaseCharacter::InteractionWithLadder()
 		const ALadder* AvailableLadder = GetAvailableLadder();
 		if (IsValid(AvailableLadder))
 		{
+			if (AvailableLadder->GetIsOnTop())
+			{
+				PlayAnimMontage(AvailableLadder->GetAttachFromTopAnimMontage());
+			}
 			GetBaseCharacterMovementComponent()->AttachToLadder(AvailableLadder);
 		}
 

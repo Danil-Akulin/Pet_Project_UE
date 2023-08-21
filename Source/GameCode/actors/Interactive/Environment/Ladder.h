@@ -9,6 +9,7 @@
  /**
  * 
  */
+class UAnimMontage;
 class UStaticMeshComponent;
 UCLASS(Blueprintable)
 class GAMECODE_API ALadder : public AInteractiveActor
@@ -24,6 +25,10 @@ public:
 	float GetLadderHeight() const;
 
 	bool GetIsOnTop() const;
+
+	UAnimMontage* GetAttachFromTopAnimMontage() const;
+
+	FVector GetAttachFromTopAnimMontageStartingLocation() const;
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ladder parameters")
@@ -50,6 +55,12 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	class UBoxComponent* TopInteractionVolume;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ladder parameters")
+	UAnimMontage* AttachFromTopAnimMontage;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Ladder parameters")
+	FVector AttachFromTopAnimMontageInitialOffset = FVector::ZeroVector;
+	
 	class UBoxComponent* GetLadderInteractionVolume() const;
 
 	virtual void OnInteractionVolumeOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult) override;

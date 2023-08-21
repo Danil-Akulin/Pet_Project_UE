@@ -41,13 +41,13 @@ bool GCTraceUtils::SweepSphereSingleByProfile(const UWorld* World, FHitResult& O
 	return bResult;
 }
 
-bool GCTraceUtils::OverlapCapsuleByProfile(const UWorld* World, const FVector& Positsion, float CapsuleRadius, float CapsuleHalfHeight, FQuat Rotation, FName ProfileName, const FCollisionQueryParams& QueryParams, bool bDrawDebug, float DrawTime, FColor HitColor)
+bool GCTraceUtils::OverlapCapsuleBlockingByProfile(const UWorld* World, const FVector& Positsion, float CapsuleRadius, float CapsuleHalfHeight, FQuat Rotation, FName ProfileName, const FCollisionQueryParams& QueryParams, bool bDrawDebug, float DrawTime, FColor HitColor)
 {
 	bool bResult = false;
 
 	FCollisionShape CollisionShape = FCollisionShape::MakeCapsule(CapsuleRadius, CapsuleHalfHeight);
 
-	bResult = World->OverlapAnyTestByProfile(Positsion, Rotation, ProfileName, CollisionShape, QueryParams);
+	bResult = World->OverlapBlockingTestByProfile(Positsion, Rotation, ProfileName, CollisionShape, QueryParams);
 
 #if ENABLE_DRAW_DEBUG
 

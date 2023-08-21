@@ -69,7 +69,7 @@ public:
 	virtual void SwimRight(float Value) {};
 	virtual void SwimUp(float Value) {};
 
-	virtual void PullUp();
+	virtual void PullUp(bool bForce);
 
 	FORCEINLINE UBaseCharacterMovementComponent* GetBaseCharacterMovementComponent() const { return BaseCharacterMovementComponent; }
 
@@ -90,6 +90,8 @@ protected:
 
 	virtual bool CanSprint();
 
+	bool CanPullUp() const;
+
 	UBaseCharacterMovementComponent* BaseCharacterMovementComponent;
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Character | PullUp")
@@ -100,7 +102,6 @@ protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Character | PullUp", meta = (ClampMin = 0.0f, UIMin = 0.0f))
 	float LowPullUpMaxHeight = 125.0f;
-
 
 private:
 
