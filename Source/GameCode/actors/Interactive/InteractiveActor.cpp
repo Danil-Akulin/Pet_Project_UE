@@ -37,7 +37,7 @@ void AInteractiveActor::OnInteractionVolumeOverlapEnd(UPrimitiveComponent* Overl
 bool AInteractiveActor::IsOverlapCharacterCapsule(AActor* OtherActor, UPrimitiveComponent* OtherComp)
 {
 	ADDBaseCharacter* BaseCharacter = Cast<ADDBaseCharacter>(OtherActor);
-	if (IsValid(BaseCharacter))
+	if (!IsValid(BaseCharacter))
 	{
 		return false;
 	}
