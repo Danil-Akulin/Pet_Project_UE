@@ -100,19 +100,18 @@ void ADDBaseCharacter::PullUp()
 
 void ADDBaseCharacter::RegisterInteractiveActor(AInteractiveActor* InteractiveActor)
 {
-	AvailableInteractiveActors.Add(InteractiveActor);
+	AvailableInteractiveActors.AddUnique(InteractiveActor);
 }
 
 void ADDBaseCharacter::UnRegisterInteractiveActor(AInteractiveActor* InteractiveActor)
 {
-	AvailableInteractiveActors.Remove(InteractiveActor);
+	AvailableInteractiveActors.RemoveSingleSwap(InteractiveActor);
 }
 
 void ADDBaseCharacter::ResetPullUpFlag()
 {
 	bIsPullingUp = false;
 }
-
 
 bool ADDBaseCharacter::CanSprint()
 {

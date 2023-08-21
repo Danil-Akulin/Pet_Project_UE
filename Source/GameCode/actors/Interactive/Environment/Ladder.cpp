@@ -24,6 +24,12 @@ ALadder::ALadder()
 	InteractionVolume = CreateDefaultSubobject<UBoxComponent>(TEXT("InteractionVolume"));
 	InteractionVolume->SetupAttachment(RootComponent);
 	InteractionVolume->SetCollisionProfileName("CollisionProfilePawnInteractionVolume");
+	InteractionVolume->SetGenerateOverlapEvents(true);
+
+	TopInteractionVolume = CreateDefaultSubobject<UBoxComponent>(TEXT("TopInteractionVolume"));
+	TopInteractionVolume->SetupAttachment(RootComponent);
+	TopInteractionVolume->SetCollisionProfileName("CollisionProfilePawnInteractionVolume");
+	TopInteractionVolume->SetGenerateOverlapEvents(true);
 }
 
 void ALadder::OnConstruction(const FTransform& Transform)
@@ -74,6 +80,18 @@ void ALadder::OnConstruction(const FTransform& Transform)
 	float BoxDepthExtend = GetLadderInteractionVolume()->GetUnscaledBoxExtent().X;
 	GetLadderInteractionVolume()->SetBoxExtent(FVector(BoxDepthExtend, LadderWidth * 0.5f, LadderHeight * 0.5f));
 	GetLadderInteractionVolume()->SetRelativeLocation(FVector(BoxDepthExtend, 0.0f, LadderHeight * 0.5f));
+
+	FVector TopBoxExtent = TopInteractionVolume->GetUnscaledBoxExtent();
+	TopInteractionVolume->SetBoxExtent(FVector(TopBoxExtent.X, LadderWidth * 0.5f, TopBoxExtent.Z));
+	TopInteractionVolume->SetRelativeLocation(FVector(-TopBoxExtent.X, 0.0f, LadderHeight + TopBoxExtent.Z));
+}
+
+void ALadder::BeginPlay()
+{
+	Super::BeginPlay();
+
+	TopInteractionVolume->OnComponentBeginOverlap.AddDynamic(this, &ALadder::OnInteractionVolumeOverlapBegin);
+	TopInteractionVolume->OnComponentEndOverlap.AddDynamic(this, &ALadder::OnInteractionVolumeOverlapEnd);
 }
 
 float ALadder::GetLadderHeight() const
@@ -81,8 +99,43 @@ float ALadder::GetLadderHeight() const
 	return LadderHeight;
 }
 
+bool ALadder::GetIsOnTop() const
+{
+	return bIsOnTop;
+}
+
 UBoxComponent* ALadder::GetLadderInteractionVolume() const
 {
 	return StaticCast<UBoxComponent*>(InteractionVolume);
 }
 
+void ALadder::OnInteractionVolumeOverlapBegin(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	Super::OnInteractionVolumeOverlapBegin(OverlappedComponent, OtherActor, OtherComp, OtherBodyIndex, bFromSweep, SweepResult);
+
+	if (!IsOverlapCharacterCapsule(OtherActor, OtherComp))
+	{
+		return;
+	}
+
+	if (OverlappedComponent == TopInteractionVolume)
+	{
+		bIsOnTop = true;
+	}
+
+}
+
+void ALadder::OnInteractionVolumeOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+	Super::OnInteractionVolumeOverlapEnd(OverlappedComponent, OtherActor, OtherComp, OtherBodyIndex);
+
+	if (!IsOverlapCharacterCapsule(OtherActor, OtherComp))
+	{
+		return;
+	}
+
+	if (OverlappedComponent == TopInteractionVolume)
+	{
+		bIsOnTop = false;
+	}
+}

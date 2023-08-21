@@ -25,4 +25,5 @@ protected:
 	UFUNCTION()
 	virtual void OnInteractionVolumeOverlapEnd(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 
+	bool IsOverlapCharacterCapsule(AActor* OtherActor, UPrimitiveComponent* OtherComp);
 };
