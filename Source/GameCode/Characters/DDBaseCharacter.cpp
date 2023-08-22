@@ -142,7 +142,7 @@ void ADDBaseCharacter::InteractionWithLadder()
 {
 	if (GetBaseCharacterMovementComponent()->IsOnLadder())
 	{
-		GetBaseCharacterMovementComponent()->DetachFromLadder();
+		GetBaseCharacterMovementComponent()->DetachFromLadder(EDetachFromLadderMethod::JumpOff);
 	}
 	else
 	{
