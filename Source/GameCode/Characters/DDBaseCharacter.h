@@ -103,6 +103,9 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Character | PullUp", meta = (ClampMin = 0.0f, UIMin = 0.0f))
 	float LowPullUpMaxHeight = 125.0f;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Character | Components")
+	class UCharacterAttributeComponent* CharacterAttributesComponent;
+
 private:
 
 	void TryChangeSprintState();

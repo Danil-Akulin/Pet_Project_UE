@@ -6,6 +6,7 @@
 #include "../Components/MovementComponents/BaseCharacterMovementComponent.h"
 #include "../LedgeDetectorComponents.h"
 #include "../actors/Interactive/Environment/Ladder.h"
+#include "../Components/CharacterComponents/CharacterAttributeComponent.h"
 
 ADDBaseCharacter::ADDBaseCharacter(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer.SetDefaultSubobjectClass<UBaseCharacterMovementComponent>(ACharacter::CharacterMovementComponentName))
@@ -13,6 +14,7 @@ ADDBaseCharacter::ADDBaseCharacter(const FObjectInitializer& ObjectInitializer)
 	BaseCharacterMovementComponent = StaticCast<UBaseCharacterMovementComponent*>(GetCharacterMovement());
 
 	LedgeDetectorComponent = CreateDefaultSubobject<ULedgeDetectorComponents>(TEXT("LedgeDetector"));
+	CharacterAttributesComponent = CreateDefaultSubobject<UCharacterAttributeComponent>(TEXT("CharacterAttributes"));
 }
 
 void ADDBaseCharacter::ChangeCrouchState()
