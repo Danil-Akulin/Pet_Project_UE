@@ -6,6 +6,7 @@
 #include "Components/ActorComponent.h"
 #include "CharacterAttributeComponent.generated.h"
 
+DECLARE_MULTICAST_DELEGATE(FOnDeathEventSignature);
 
 UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
 class GAMECODE_API UCharacterAttributeComponent : public UActorComponent
@@ -18,25 +19,27 @@ public:
 
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
+	FOnDeathEventSignature FOnDeathEvent;
+
+	bool IsAlive() { return Health > 0.0f; };
+
 protected:
-
-
 
 	virtual void BeginPlay() override;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Health", meta = (UIMin = 0.f))
-		float MaxHealth = 100.f;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Health", meta = (UIMin = 0.0f))
+	float MaxHealth = 100.0f;
 
 private:
 
 	float Health = 0.0f;
 
-	//#if UE_BUILD_DEBUG || UE_BUILD_DEVELOPMENT
+	#if UE_BUILD_DEBUG || UE_BUILD_DEVELOPMENT
 	void DebugDrawAttributes();
-	//#endif
+	#endif
 
 	UFUNCTION()
-		void OnTakeAnyDamage(AActor* DamagedActor, float Damage, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser);
+	void OnTakeAnyDamage(AActor* DamagedActor, float Damage, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser);
 
 	TWeakObjectPtr<class ADDBaseCharacter> CachedBaseCharacterOwner;
 

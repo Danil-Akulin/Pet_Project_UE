@@ -4,6 +4,7 @@
 #define ECC_InteractionVolume ECC_GameTraceChannel2
 
 const FName CollisionProfilePawn = FName("Pawn");
+const FName CollisionProfileRegdoll = FName("Ragdoll");
 
 const FName CollisionProfilePawnInteractionVolume = FName("PawnInteractionVolume");
 

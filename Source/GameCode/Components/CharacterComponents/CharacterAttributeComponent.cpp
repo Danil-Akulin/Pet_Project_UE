@@ -26,7 +26,7 @@ void UCharacterAttributeComponent::BeginPlay()
 	CachedBaseCharacterOwner->OnTakeAnyDamage.AddDynamic(this, &UCharacterAttributeComponent::OnTakeAnyDamage);
 }
 
-//#if UE_BUILD_DEBUG || UE_BUILD_DEVELOPMENT
+#if UE_BUILD_DEBUG || UE_BUILD_DEVELOPMENT
 void UCharacterAttributeComponent::DebugDrawAttributes()
 {
 	UDebugSubsystem* DebugSubsystem = UGameplayStatics::GetGameInstance(GetWorld())->GetSubsystem<UDebugSubsystem>();
@@ -35,16 +35,29 @@ void UCharacterAttributeComponent::DebugDrawAttributes()
 		return;
 	}
 
-
 	FVector TextLocation = CachedBaseCharacterOwner->GetActorLocation() + (CachedBaseCharacterOwner->GetCapsuleComponent()->GetScaledCapsuleHalfHeight() + 5.0f) * FVector::UpVector;
 	DrawDebugString(GetWorld(), TextLocation, FString::Printf(TEXT("Health: %.2f"), Health), nullptr, FColor::Green, 0.0f, true);
 }
-//#endif
+#endif
 
 void UCharacterAttributeComponent::OnTakeAnyDamage(AActor* DamagedActor, float Damage, const UDamageType* DamageType, AController* InstigatedBy, AActor* DamageCauser)
 {
+	if (!IsAlive())
+	{
+		return;
+	}
+
 	UE_LOG(LogDamage, Warning, TEXT("UCharacterAttributesComponent::OnTakeAnyDamage %s recieved %.2f amount of damage from %s"), *CachedBaseCharacterOwner->GetName(), Damage, *DamageCauser->GetName());
 	Health = FMath::Clamp(Health - Damage, 0.f, MaxHealth);
+
+	if (Health <= 0.0f)
+	{
+		UE_LOG(LogDamage, Warning, TEXT("UCharacterAttributesComponent::OnTakeAnyDamage Character %s is killed by %s"), *CachedBaseCharacterOwner->GetName(), *DamageCauser->GetName());
+		if (FOnDeathEvent.IsBound())
+		{
+			FOnDeathEvent.Broadcast();
+		}
+	}
 }
 
 // Called every frame
@@ -52,7 +65,7 @@ void UCharacterAttributeComponent::TickComponent(float DeltaTime, ELevelTick Tic
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	//#if UE_BUILD_DEBUG || UE_BUILD_DEVELOPMENT
+	#if UE_BUILD_DEBUG || UE_BUILD_DEVELOPMENT
 	DebugDrawAttributes();
-	//#endif
+	#endif
 }

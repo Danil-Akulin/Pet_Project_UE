@@ -50,6 +50,7 @@ public:
 
 	ADDBaseCharacter(const FObjectInitializer& ObjectInitializer);
 
+	virtual void BeginPlay() override;
 	
 	virtual void MoveForward(float Value) {};
 	virtual void MoveRight(float Value) {};
@@ -106,6 +107,11 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Character | Components")
 	class UCharacterAttributeComponent* CharacterAttributesComponent;
 
+	virtual void OnDeath();
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Character | Anim")
+	class UAnimMontage* OnDeathAnimMontage;
+
 private:
 
 	void TryChangeSprintState();
@@ -118,6 +124,9 @@ private:
 	bool bIsPullingUp = false;
 	FTimerHandle PullUpResetTimer;
 
+	bool bIsAlive = true;
 
 	TArray<AInteractiveActor*> AvailableInteractiveActors;
+
+	void EnableRegdoll();
 };

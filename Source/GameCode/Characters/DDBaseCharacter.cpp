@@ -7,6 +7,7 @@
 #include "../LedgeDetectorComponents.h"
 #include "../actors/Interactive/Environment/Ladder.h"
 #include "../Components/CharacterComponents/CharacterAttributeComponent.h"
+#include "../DD_Types.h"
 
 ADDBaseCharacter::ADDBaseCharacter(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer.SetDefaultSubobjectClass<UBaseCharacterMovementComponent>(ACharacter::CharacterMovementComponentName))
@@ -15,6 +16,13 @@ ADDBaseCharacter::ADDBaseCharacter(const FObjectInitializer& ObjectInitializer)
 
 	LedgeDetectorComponent = CreateDefaultSubobject<ULedgeDetectorComponents>(TEXT("LedgeDetector"));
 	CharacterAttributesComponent = CreateDefaultSubobject<UCharacterAttributeComponent>(TEXT("CharacterAttributes"));
+}
+
+void ADDBaseCharacter::BeginPlay()
+{
+	Super::BeginPlay();
+
+	CharacterAttributesComponent->FOnDeathEvent.AddUObject(this, &ADDBaseCharacter::OnDeath);
 }
 
 void ADDBaseCharacter::ChangeCrouchState()
@@ -56,6 +64,10 @@ bool ADDBaseCharacter::CanJumpInternal_Implementation() const
 
 void ADDBaseCharacter::PullUp(bool bForce /*= false*/)
 {
+	if (!bIsAlive)
+	{
+		return;
+	}
 
 	if (!(CanPullUp() || bForce))
 	{
@@ -121,6 +133,7 @@ void ADDBaseCharacter::ResetPullUpFlag()
 	bIsPullingUp = false;
 }
 
+
 bool ADDBaseCharacter::CanSprint()
 {
 	return true;
@@ -175,6 +188,17 @@ const ALadder* ADDBaseCharacter::GetAvailableLadder() const
 	return Result;
 }
 
+void ADDBaseCharacter::OnDeath()
+{
+	bIsAlive = false;
+	GetCharacterMovement()->DisableMovement();
+	float AnimationOnDeathDuration = PlayAnimMontage(OnDeathAnimMontage);
+	if (AnimationOnDeathDuration == 0.0f)
+	{
+		EnableRegdoll();
+	}
+}
+
 void ADDBaseCharacter::TryChangeSprintState()
 {																			// если есть запрос на спринт но мы не бежим но мы можем бежать
 	if (bIsSprintRequested && !BaseCharacterMovementComponent->IsSprinting() && CanSprint())
@@ -193,3 +217,9 @@ const FPullUpSettings& ADDBaseCharacter::GetPullUpSettings(float LedgeHeight) co
 	return LedgeHeight > LowPullUpMaxHeight ? HighPullUpSettings : LowPullUpSettings;
 }
 
+
+void ADDBaseCharacter::EnableRegdoll()
+{
+	GetMesh()->SetCollisionProfileName(CollisionProfileRegdoll);
+	GetMesh()->SetSimulatePhysics(true);
+}
