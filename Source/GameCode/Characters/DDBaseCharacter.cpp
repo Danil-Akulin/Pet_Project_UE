@@ -188,6 +188,28 @@ const ALadder* ADDBaseCharacter::GetAvailableLadder() const
 	return Result;
 }
 
+void ADDBaseCharacter::Falling()
+{
+	GetBaseCharacterMovementComponent()->bNotifyApex = true;
+}
+
+void ADDBaseCharacter::NotifyJumpApex()
+{
+	Super::NotifyJumpApex();
+	CurrentFallLenght = GetActorLocation();
+}
+
+void ADDBaseCharacter::Landed(const FHitResult& Hit)
+{
+	Super::Landed(Hit);
+	float FallHeight = (CurrentFallLenght - GetActorLocation()).Z * 0.01f;
+	if (IsValid(FallDamageCurve))
+	{
+		float DamageAmount = FallDamageCurve->GetFloatValue(FallHeight);
+		TakeDamage(DamageAmount, FDamageEvent(), GetController(), Hit.Actor.Get());
+	}
+}
+
 void ADDBaseCharacter::OnDeath()
 {
 	bIsAlive = false;
