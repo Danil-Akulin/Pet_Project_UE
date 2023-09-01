@@ -3,11 +3,12 @@
 
 #include "DDBaseCharacter.h"
 #include "GameFramework/CharacterMovementComponent.h"
-#include "../Components/MovementComponents/BaseCharacterMovementComponent.h"
-#include "../LedgeDetectorComponents.h"
-#include "../actors/Interactive/Environment/Ladder.h"
-#include "../Components/CharacterComponents/CharacterAttributeComponent.h"
-#include "../DD_Types.h"
+#include "Components/MovementComponents/BaseCharacterMovementComponent.h"
+#include "LedgeDetectorComponents.h"
+#include "actors/Interactive/Environment/Ladder.h"
+#include "Components/CharacterComponents/CharacterAttributeComponent.h"
+#include "DD_Types.h"
+#include "Components/CharacterComponents/CharacterEquipmentComponent.h"
 
 ADDBaseCharacter::ADDBaseCharacter(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer.SetDefaultSubobjectClass<UBaseCharacterMovementComponent>(ACharacter::CharacterMovementComponentName))
@@ -16,6 +17,8 @@ ADDBaseCharacter::ADDBaseCharacter(const FObjectInitializer& ObjectInitializer)
 
 	LedgeDetectorComponent = CreateDefaultSubobject<ULedgeDetectorComponents>(TEXT("LedgeDetector"));
 	CharacterAttributesComponent = CreateDefaultSubobject<UCharacterAttributeComponent>(TEXT("CharacterAttributes"));
+
+	CharacterEquipmentComponent = CreateDefaultSubobject<UCharacterEquipmentComponent>(TEXT("CharacterEquipment"));
 }
 
 void ADDBaseCharacter::BeginPlay()
