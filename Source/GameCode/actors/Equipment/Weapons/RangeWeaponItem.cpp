@@ -3,6 +3,7 @@
 
 #include "RangeWeaponItem.h"
 #include "Components/Weapons/WeaponBarrelComponent.h"
+#include "DD_Types.h"	
 
 ARangeWeaponItem::ARangeWeaponItem()
 {
@@ -12,5 +13,5 @@ ARangeWeaponItem::ARangeWeaponItem()
 	WeaponMesh->SetupAttachment(RootComponent);
 
 	WeaponBarell = CreateDefaultSubobject<UWeaponBarrelComponent>(TEXT("WeaponBarell"));
-	WeaponBarell->SetupAttachment(WeaponMesh);
+	WeaponBarell->SetupAttachment(WeaponMesh, SocketWeaponMuzzle);
 }

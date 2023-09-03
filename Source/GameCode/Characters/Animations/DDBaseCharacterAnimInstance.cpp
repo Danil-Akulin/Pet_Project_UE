@@ -5,6 +5,7 @@
 #include "../DDBaseCharacter.h"
 #include "../../Components/MovementComponents/BaseCharacterMovementComponent.h"
 #include <GameFramework/CharacterMovementComponent.h>
+#include "../../Components/CharacterComponents/CharacterEquipmentComponent.h"
 
 void UDDBaseCharacterAnimInstance::NativeBeginPlay()
 {
@@ -22,6 +23,10 @@ void UDDBaseCharacterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 	}
 
 	UBaseCharacterMovementComponent* CharacterMovement = CachedBaseCharacter->GetBaseCharacterMovementComponent();
+
+	bIsStrafe = !CharacterMovement->bOrientRotationToMovement;
+	Direction = CalculateDirection(CharacterMovement->Velocity, CachedBaseCharacter->GetActorRotation());
+
 	Speed = CharacterMovement->Velocity.Size();
 	bIsFalling = CharacterMovement->IsFalling();
 	bIsCrouching = CharacterMovement->IsCrouching();
@@ -32,5 +37,8 @@ void UDDBaseCharacterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 	{
 		LadderSpeedRatio = CharacterMovement->GetLadderSpeedRatio();
 	}
+
+	const UCharacterEquipmentComponent* CharacterEquipment = CachedBaseCharacter->GetCharacterEquipmentComponent();
+	CurrentEquippedType = CharacterEquipment->GetCurrentEquippedItemType();
 }
  

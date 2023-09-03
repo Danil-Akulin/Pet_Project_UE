@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Animation/AnimInstance.h"
 #include "../PlayerCharacter.h"
+#include "DD_Types.h"
 #include "DDBaseCharacterAnimInstance.generated.h"
 
 /**
@@ -42,6 +43,15 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character Animation")
 	float LadderSpeedRatio = 0.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character Animation")
+	bool bIsStrafe = false;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character Animation", meta = (UIMin = -180.0f, UIMax = 180.0f))
+	float Direction = 0.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character Animation")
+	EEquippedItemType CurrentEquippedType = EEquippedItemType::None;
 
 private:
 	TWeakObjectPtr<class ADDBaseCharacter> CachedBaseCharacter;

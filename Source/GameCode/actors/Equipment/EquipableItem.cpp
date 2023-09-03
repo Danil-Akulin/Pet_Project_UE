@@ -3,3 +3,7 @@
 
 #include "EquipableItem.h"
 
+EEquippedItemType AEquipableItem::GetItemType() const
+{
+	return ItemType;
+}

@@ -38,7 +38,7 @@ struct FPullUpSettings
 
 };
 
-
+class UCharacterEquipmentComponent;
 class AInteractiveActor;
 class UBaseCharacterMovementComponent;
 UCLASS(Abstract, NotBlueprintable)
@@ -87,6 +87,8 @@ public:
 	virtual void Falling() override;
 	virtual void NotifyJumpApex() override;
 	virtual void Landed(const FHitResult& Hit) override;
+
+	const UCharacterEquipmentComponent* GetCharacterEquipmentComponent() const;
 
 protected:
 

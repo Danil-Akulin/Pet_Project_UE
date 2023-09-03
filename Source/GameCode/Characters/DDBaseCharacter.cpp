@@ -213,6 +213,11 @@ void ADDBaseCharacter::Landed(const FHitResult& Hit)
 	}
 }
 
+const UCharacterEquipmentComponent* ADDBaseCharacter::GetCharacterEquipmentComponent() const
+{
+	return CharacterEquipmentComponent;
+}
+
 void ADDBaseCharacter::OnDeath()
 {
 	bIsAlive = false;
