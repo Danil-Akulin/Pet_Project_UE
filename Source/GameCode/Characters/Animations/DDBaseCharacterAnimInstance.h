@@ -53,6 +53,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character Animation")
 	EEquippedItemType CurrentEquippedType = EEquippedItemType::None;
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character Animation")
+	FRotator AimRotation = FRotator::ZeroRotator;
+
 private:
 	TWeakObjectPtr<class ADDBaseCharacter> CachedBaseCharacter;
 };

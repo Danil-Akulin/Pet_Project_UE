@@ -42,5 +42,7 @@ private:
 	void PullUpLadderUp(float Value);			
 	void InteractionWithLadder();				
 
+	void Fire();
+
 	TSoftObjectPtr<class ADDBaseCharacter> CachedBaseCharacter;
 };

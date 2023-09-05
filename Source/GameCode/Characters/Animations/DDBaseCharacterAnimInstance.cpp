@@ -38,6 +38,8 @@ void UDDBaseCharacterAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 		LadderSpeedRatio = CharacterMovement->GetLadderSpeedRatio();
 	}
 
+	AimRotation = CachedBaseCharacter->GetBaseAimRotation();
+	
 	const UCharacterEquipmentComponent* CharacterEquipment = CachedBaseCharacter->GetCharacterEquipmentComponent();
 	CurrentEquippedType = CharacterEquipment->GetCurrentEquippedItemType();
 }

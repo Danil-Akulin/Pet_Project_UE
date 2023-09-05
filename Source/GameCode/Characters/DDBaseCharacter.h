@@ -90,6 +90,8 @@ public:
 
 	const UCharacterEquipmentComponent* GetCharacterEquipmentComponent() const;
 
+	void Fire();
+
 protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Character | Movement")

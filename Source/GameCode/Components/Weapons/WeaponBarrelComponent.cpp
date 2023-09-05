@@ -2,33 +2,35 @@
 
 
 #include "WeaponBarrelComponent.h"
+#include "DD_Types.h"
+#include <DrawDebugHelpers.h>
+#include "Subsystems/DebugSubsystem.h"
+#include "Kismet/GameplayStatics.h"
 
-// Sets default values for this component's properties
-UWeaponBarrelComponent::UWeaponBarrelComponent()
+void UWeaponBarrelComponent::Shot()
 {
-	// Set this component to be initialized when the game starts, and to be ticked every frame.  You can turn these features
-	// off to improve performance if you don't need them.
-	PrimaryComponentTick.bCanEverTick = true;
+	FVector ShotStart = GetComponentLocation();
+	FVector ShotDirection = GetComponentRotation().RotateVector(FVector::ForwardVector);
+	FVector ShotEnd = ShotStart + Range * ShotDirection;
 
-	// ...
+#if ENABLE_DRAW_DEBUG
+	UDebugSubsystem* DebugSubSystem = UGameplayStatics::GetGameInstance(GetWorld())->GetSubsystem<UDebugSubsystem>();
+	bool bIsDebugEnabled = DebugSubSystem->IsCategoryEnabled(DebugCategoryRangeWeapon);
+#else
+	bool bIsDebugEnabled = false;
+#endif
+
+	FHitResult ShotResult;
+	if (GetWorld()->LineTraceSingleByChannel(ShotResult, ShotStart, ShotEnd, ECC_Bullet))
+	{
+		ShotEnd = ShotResult.ImpactPoint;
+		if (bIsDebugEnabled)
+		{
+			DrawDebugSphere(GetWorld(), ShotEnd, 15.0f, 24, FColor::Cyan, false, 1.0f);
+		}
+	}
+	if (bIsDebugEnabled)
+	{
+		DrawDebugLine(GetWorld(), ShotStart, ShotEnd, FColor::Red, false, 1.0f, 0, 3.0f);
+	}
 }
-
-
-// Called when the game starts
-void UWeaponBarrelComponent::BeginPlay()
-{
-	Super::BeginPlay();
-
-	// ...
-	
-}
-
-
-// Called every frame
-void UWeaponBarrelComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
-{
-	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
-
-	// ...
-}
-

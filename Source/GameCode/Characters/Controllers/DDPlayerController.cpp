@@ -28,6 +28,7 @@ void ADDPlayerController::SetupInputComponent()
 	InputComponent->BindAction("Crouch", EInputEvent::IE_Pressed, this, &ADDPlayerController::ChangeCrouchState);
 	InputComponent->BindAction("Sprint", EInputEvent::IE_Pressed, this, &ADDPlayerController::StartSprint);
 	InputComponent->BindAction("Sprint", EInputEvent::IE_Released, this, &ADDPlayerController::StopSprint);
+	InputComponent->BindAction("Fire", EInputEvent::IE_Pressed, this, &ADDPlayerController::Fire);
 }
 
 void ADDPlayerController::MoveForward(float Value)
@@ -139,5 +140,13 @@ void ADDPlayerController::InteractionWithLadder()
 	if (CachedBaseCharacter.IsValid())
 	{
 		CachedBaseCharacter->InteractionWithLadder();
+	}
+}
+
+void ADDPlayerController::Fire()
+{
+	if (CachedBaseCharacter.IsValid())
+	{
+		CachedBaseCharacter->Fire();
 	}
 }

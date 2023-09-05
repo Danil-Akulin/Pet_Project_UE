@@ -17,6 +17,8 @@ public:
 
 	EEquippedItemType GetCurrentEquippedItemType() const;
 
+	void Fire();
+
 virtual void BeginPlay() override;
 
 protected:

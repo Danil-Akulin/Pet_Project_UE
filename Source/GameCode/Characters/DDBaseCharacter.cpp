@@ -218,6 +218,11 @@ const UCharacterEquipmentComponent* ADDBaseCharacter::GetCharacterEquipmentCompo
 	return CharacterEquipmentComponent;
 }
 
+void ADDBaseCharacter::Fire()
+{
+	CharacterEquipmentComponent->Fire();
+}
+
 void ADDBaseCharacter::OnDeath()
 {
 	bIsAlive = false;

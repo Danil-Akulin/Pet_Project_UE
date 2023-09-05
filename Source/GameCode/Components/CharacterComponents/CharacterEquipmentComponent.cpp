@@ -16,6 +16,14 @@ EEquippedItemType UCharacterEquipmentComponent::GetCurrentEquippedItemType() con
 	return Result;
 }
 
+void UCharacterEquipmentComponent::Fire()
+{
+	if (IsValid(CurrentEquippedItem))
+	{
+		CurrentEquippedItem->Fire();
+	}
+}
+
 void UCharacterEquipmentComponent::BeginPlay()
 {
 	Super::BeginPlay();
