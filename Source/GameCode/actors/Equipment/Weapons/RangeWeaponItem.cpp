@@ -21,6 +21,10 @@ void ARangeWeaponItem::Fire()
 {
 	ADDBaseCharacter* CharacterOwner = StaticCast<ADDBaseCharacter*>(GetOwner());
 
+	CharacterOwner->PlayAnimMontage(CharacterFireMontage);
+	PlayAnimMontage(WeaponFireMontage);
+
+
 	APlayerController* Controller = CharacterOwner->GetController<APlayerController>();
 	if (!IsValid(Controller))
 	{
@@ -35,4 +39,10 @@ void ARangeWeaponItem::Fire()
 	FVector ViewDirection = PlayerViewRotation.RotateVector(FVector::ForwardVector);
 
 	WeaponBarell->Shot(PlayerViewPoint, ViewDirection, Controller);
+}
+
+float ARangeWeaponItem::PlayAnimMontage(UAnimMontage* AnimMontage)
+{
+	UAnimInstance* WeaponAnimInstance = WeaponMesh->GetAnimInstance();
+	return WeaponAnimInstance->Montage_Play(AnimMontage);
 }

@@ -10,7 +10,6 @@
 void UWeaponBarrelComponent::Shot(FVector ShotStart, FVector ShotDirection, AController* Controller)
 {
 	FVector Muzzle = GetComponentLocation();
-	//FVector ShotDirection = GetComponentRotation().RotateVector(FVector::ForwardVector);
 	FVector ShotEnd = ShotStart + Range * ShotDirection;
 
 #if ENABLE_DRAW_DEBUG
