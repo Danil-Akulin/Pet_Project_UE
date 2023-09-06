@@ -14,11 +14,14 @@ class GAMECODE_API UWeaponBarrelComponent : public USceneComponent
 
 public:	
 	
-	void Shot();
+	void Shot(FVector ShotStart, FVector ShotDirection, AController* Controller);
 		
 protected:
 
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Barrel attributes")
 	float Range = 5000.0f;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Barrel attributes | Damage")
+	float DamageAmount = 50.0f;
 
 };

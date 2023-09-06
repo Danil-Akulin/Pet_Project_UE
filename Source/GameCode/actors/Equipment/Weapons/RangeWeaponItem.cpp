@@ -3,7 +3,8 @@
 
 #include "RangeWeaponItem.h"
 #include "Components/Weapons/WeaponBarrelComponent.h"
-#include "DD_Types.h"	
+#include "DD_Types.h"
+#include "Characters/DDBaseCharacter.h"
 
 ARangeWeaponItem::ARangeWeaponItem()
 {
@@ -18,5 +19,20 @@ ARangeWeaponItem::ARangeWeaponItem()
 
 void ARangeWeaponItem::Fire()
 {
-	WeaponBarell->Shot();
+	ADDBaseCharacter* CharacterOwner = StaticCast<ADDBaseCharacter*>(GetOwner());
+
+	APlayerController* Controller = CharacterOwner->GetController<APlayerController>();
+	if (!IsValid(Controller))
+	{
+		return;
+	}
+
+	FVector PlayerViewPoint;
+	FRotator PlayerViewRotation;
+
+	Controller->GetPlayerViewPoint(PlayerViewPoint, PlayerViewRotation);
+
+	FVector ViewDirection = PlayerViewRotation.RotateVector(FVector::ForwardVector);
+
+	WeaponBarell->Shot(PlayerViewPoint, ViewDirection, Controller);
 }

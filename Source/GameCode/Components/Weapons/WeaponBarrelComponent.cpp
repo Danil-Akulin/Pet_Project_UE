@@ -7,10 +7,10 @@
 #include "Subsystems/DebugSubsystem.h"
 #include "Kismet/GameplayStatics.h"
 
-void UWeaponBarrelComponent::Shot()
+void UWeaponBarrelComponent::Shot(FVector ShotStart, FVector ShotDirection, AController* Controller)
 {
-	FVector ShotStart = GetComponentLocation();
-	FVector ShotDirection = GetComponentRotation().RotateVector(FVector::ForwardVector);
+	FVector Muzzle = GetComponentLocation();
+	//FVector ShotDirection = GetComponentRotation().RotateVector(FVector::ForwardVector);
 	FVector ShotEnd = ShotStart + Range * ShotDirection;
 
 #if ENABLE_DRAW_DEBUG
@@ -24,13 +24,19 @@ void UWeaponBarrelComponent::Shot()
 	if (GetWorld()->LineTraceSingleByChannel(ShotResult, ShotStart, ShotEnd, ECC_Bullet))
 	{
 		ShotEnd = ShotResult.ImpactPoint;
+		AActor* HitActor = ShotResult.GetActor();
+
 		if (bIsDebugEnabled)
 		{
 			DrawDebugSphere(GetWorld(), ShotEnd, 15.0f, 24, FColor::Cyan, false, 1.0f);
 		}
+		if (IsValid(HitActor))
+		{
+			HitActor->TakeDamage(DamageAmount, FDamageEvent{}, Controller, GetOwner());
+		}
 	}
 	if (bIsDebugEnabled)
 	{
-		DrawDebugLine(GetWorld(), ShotStart, ShotEnd, FColor::Red, false, 1.0f, 0, 3.0f);
+		DrawDebugLine(GetWorld(), Muzzle, ShotEnd, FColor::Red, false, 1.0f, 0, 3.0f);
 	}
 }
