@@ -4,6 +4,9 @@
 #define ECC_InteractionVolume ECC_GameTraceChannel2
 #define ECC_Bullet ECC_GameTraceChannel3
 
+const FName FXParamTraceEnd  = FName("TraceEnd");
+
+
 const FName CollisionProfilePawn = FName("Pawn");
 const FName CollisionProfileRegdoll = FName("Ragdoll");
 
