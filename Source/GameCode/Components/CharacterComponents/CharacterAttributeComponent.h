@@ -14,7 +14,7 @@ class GAMECODE_API UCharacterAttributeComponent : public UActorComponent
 	GENERATED_BODY()
 
 public:
-
+	
 	UCharacterAttributeComponent();
 
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
@@ -22,6 +22,8 @@ public:
 	FOnDeathEventSignature FOnDeathEvent;
 
 	bool IsAlive() { return Health > 0.0f; };
+
+	float GetHealthPercent() const;
 
 protected:
 

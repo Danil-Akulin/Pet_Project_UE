@@ -17,6 +17,7 @@ UCharacterAttributeComponent::UCharacterAttributeComponent()
 }
 
 
+
 // Called when the game starts
 void UCharacterAttributeComponent::BeginPlay()
 {
@@ -68,4 +69,9 @@ void UCharacterAttributeComponent::TickComponent(float DeltaTime, ELevelTick Tic
 	#if UE_BUILD_DEBUG || UE_BUILD_DEVELOPMENT
 	DebugDrawAttributes();
 	#endif
+}
+
+float UCharacterAttributeComponent::GetHealthPercent() const
+{
+	return Health / MaxHealth;
 }

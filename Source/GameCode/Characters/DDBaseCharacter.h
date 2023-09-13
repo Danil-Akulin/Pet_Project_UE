@@ -41,6 +41,7 @@ struct FPullUpSettings
 class UCharacterEquipmentComponent;
 class AInteractiveActor;
 class UBaseCharacterMovementComponent;
+class UCharacterAttributeComponent;
 UCLASS(Abstract, NotBlueprintable)
 class GAMECODE_API ADDBaseCharacter : public ACharacter
 {
@@ -91,6 +92,8 @@ public:
 	const UCharacterEquipmentComponent* GetCharacterEquipmentComponent() const;
 
 	void Fire();
+
+	UCharacterAttributeComponent* GetCharacterAttributesComponent() const;
 
 protected:
 

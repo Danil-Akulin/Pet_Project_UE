@@ -223,6 +223,11 @@ void ADDBaseCharacter::Fire()
 	CharacterEquipmentComponent->Fire();
 }
 
+UCharacterAttributeComponent* ADDBaseCharacter::GetCharacterAttributesComponent() const
+{
+	return CharacterAttributesComponent;
+}
+
 void ADDBaseCharacter::OnDeath()
 {
 	bIsAlive = false;
