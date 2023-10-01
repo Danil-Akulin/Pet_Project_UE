@@ -16,9 +16,16 @@ class GAMECODE_API ARangeWeaponItem : public AEquipableItem
 	GENERATED_BODY()
 	
 public:
+	virtual void BeginPlay() override;
+
 	ARangeWeaponItem();
 
 	void Fire();
+	void StopFire();
+
+	int32 GetAmmo() const;	
+	void SetAmmo(int32 NewAmmo);
+	bool CanShoot() const;
 
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
@@ -33,7 +40,14 @@ protected:
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Animations | Character")
 	UAnimMontage* CharacterFireMontage;
 
+	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Weapon | Ammo")
+	int32 MaxAmmo = 30;
 
 private:
 	float PlayAnimMontage(UAnimMontage* AnimMontage);
+
+	int32 Ammo = 0;
+
+	bool bIsFiring = false;
+	FTimerHandle ShotTimer;
 };
