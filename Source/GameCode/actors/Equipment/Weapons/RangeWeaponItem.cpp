@@ -50,7 +50,7 @@ void ARangeWeaponItem::Fire()
 
 	FVector ViewDirection = PlayerViewRotation.RotateVector(FVector::ForwardVector);
 
-	Ammo--;
+	SetAmmo(Ammo - 1);
 
 	WeaponBarell->Shot(PlayerViewPoint, ViewDirection, Controller);
 }
@@ -69,6 +69,10 @@ int32 ARangeWeaponItem::GetAmmo() const
 void ARangeWeaponItem::SetAmmo(int32 NewAmmo)
 {
 	Ammo = NewAmmo;
+	if (OnAmmoChanged.IsBound())
+	{
+		OnAmmoChanged.Broadcast(Ammo);
+	}
 }
 
 bool ARangeWeaponItem::CanShoot() const

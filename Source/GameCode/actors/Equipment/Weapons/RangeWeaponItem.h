@@ -6,6 +6,12 @@
 #include "actors/Equipment/EquipableItem.h"
 #include "RangeWeaponItem.generated.h"
 
+
+
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnAmmoChanged, int32);
+
+
+
 /**
  * 
  */
@@ -23,9 +29,11 @@ public:
 	void Fire();
 	void StopFire();
 
-	int32 GetAmmo() const;	
+	int32 GetAmmo() const;
 	void SetAmmo(int32 NewAmmo);
 	bool CanShoot() const;
+
+	FOnAmmoChanged OnAmmoChanged;
 
 protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")

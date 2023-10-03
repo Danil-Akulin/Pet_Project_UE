@@ -91,6 +91,8 @@ public:
 
 	const UCharacterEquipmentComponent* GetCharacterEquipmentComponent() const;
 
+	UCharacterEquipmentComponent* GetCharacterEquipmentComponent_Mutable() const;
+
 	void Fire();
 
 	UCharacterAttributeComponent* GetCharacterAttributesComponent() const;

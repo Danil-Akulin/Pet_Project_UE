@@ -218,6 +218,11 @@ const UCharacterEquipmentComponent* ADDBaseCharacter::GetCharacterEquipmentCompo
 	return CharacterEquipmentComponent;
 }
 
+UCharacterEquipmentComponent* ADDBaseCharacter::GetCharacterEquipmentComponent_Mutable() const
+{
+	return CharacterEquipmentComponent;
+}
+
 void ADDBaseCharacter::Fire()
 {
 	CharacterEquipmentComponent->Fire();

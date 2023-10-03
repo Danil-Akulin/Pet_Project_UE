@@ -3,12 +3,20 @@
 
 #include "DDPlayerController.h"
 #include "../DDBaseCharacter.h"
-
+#include "Blueprint/UserWidget.h"
+#include "../../UI/Widget/PlayerHUDWidget.h"
+#include "../../UI/Widget/AmmoWidget.h"
+#include "Components/CharacterComponents/CharacterEquipmentComponent.h"
+	
 void ADDPlayerController::SetPawn(APawn* InPawn)
 {
 	Super::SetPawn(InPawn);
 
 	CachedBaseCharacter = Cast<ADDBaseCharacter>(InPawn);
+	if (CachedBaseCharacter.IsValid() && IsLocalController())
+	{
+		CreateAndInitializeWidgets();
+	}
 }
 
 void ADDPlayerController::SetupInputComponent()
@@ -148,5 +156,29 @@ void ADDPlayerController::Fire()
 	if (CachedBaseCharacter.IsValid())
 	{
 		CachedBaseCharacter->Fire();
+	}
+}
+
+void ADDPlayerController::CreateAndInitializeWidgets()
+{
+
+	if (!IsValid(PlayerHUDWidget))
+	{
+		PlayerHUDWidget = CreateWidget<UPlayerHUDWidget>(GetWorld(), PlayerHUDWidgetClass);
+		if (IsValid(PlayerHUDWidget))
+		{
+			PlayerHUDWidget->AddToViewport();
+		}
+	}
+
+	if (CachedBaseCharacter.IsValid() && IsValid(PlayerHUDWidget))
+	{
+		UCharacterEquipmentComponent* CharacterEquipment = CachedBaseCharacter->GetCharacterEquipmentComponent_Mutable();
+
+		UAmmoWidget* AmmoWidget = PlayerHUDWidget->GetAmmoWidget();
+		if (IsValid(AmmoWidget))
+		{
+			CharacterEquipment->OnCurrentWeaponAmmoChangedEvent.AddUFunction(AmmoWidget, FName("UpdateAmmoCount"));
+		}
 	}
 }
